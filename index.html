@@ -3,25 +3,39 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
+
   <title>おいのりさん™</title>
 
   <style>
     body {
-      font-family: sans-serif;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Hiragino Sans",
+        "Yu Gothic",
+        sans-serif;
+
       margin: 0;
       background: #faf8f5;
       color: #333;
     }
 
     header {
-      padding: 24px 20px 12px;
+      padding: 28px 20px 14px;
       text-align: center;
     }
 
     h1 {
-      margin-bottom: 6px;
+      margin: 0 0 6px;
+      font-size: 28px;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 20px;
     }
 
     .tagline {
@@ -36,20 +50,22 @@
     }
 
     .card {
-      background: white;
+      background: #fff;
       border-radius: 16px;
       padding: 20px;
       margin-bottom: 20px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
     }
 
     label {
       display: block;
-      margin-top: 12px;
+      margin-top: 14px;
       font-size: 14px;
+      font-weight: 600;
     }
 
-    input, textarea {
+    input,
+    textarea {
       width: 100%;
       box-sizing: border-box;
       padding: 12px;
@@ -57,6 +73,11 @@
       border: 1px solid #ccc;
       border-radius: 10px;
       font-size: 16px;
+      background: #fff;
+    }
+
+    textarea {
+      resize: vertical;
     }
 
     button {
@@ -66,12 +87,17 @@
       border: none;
       border-radius: 12px;
       background: #555;
-      color: white;
+      color: #fff;
       font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:active {
+      opacity: 0.8;
     }
 
     .person {
-      padding: 14px 0;
+      padding: 16px 0;
       border-bottom: 1px solid #eee;
     }
 
@@ -79,22 +105,60 @@
       border-bottom: none;
     }
 
+    .person-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .profile-photo {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .profile-photo.placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #eee;
+      color: #777;
+      font-size: 20px;
+    }
+
     .display-name {
       font-size: 18px;
       font-weight: bold;
     }
 
+    .real-name {
+      margin-top: 2px;
+      color: #777;
+      font-size: 14px;
+    }
+
     .prayer {
-      margin-top: 4px;
-      color: #666;
+      margin-top: 6px;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .empty {
+      color: #888;
+      font-size: 14px;
     }
   </style>
 </head>
 
 <body>
+
   <header>
     <h1>おいのりさん™</h1>
-    <div class="tagline">大切な人に、祈りを捧げる。</div>
+    <div class="tagline">
+      大切な人に、祈りを捧げる。
+    </div>
   </header>
 
   <main>
@@ -104,95 +168,249 @@
 
       <label>
         名前
-        <input id="name" type="text" placeholder="例：山田 花子">
+        <input
+          id="name"
+          type="text"
+          placeholder="例：山田 花子"
+        >
       </label>
 
       <label>
         表示名
-        <input id="displayName" type="text" placeholder="例：お母さん">
+        <input
+          id="displayName"
+          type="text"
+          placeholder="例：お母さん"
+        >
       </label>
 
       <label>
         写真
-        <input id="photo" type="file" accept="image/*">
-      </label>
-      
-      <label>
-        祈り
-        <textarea id="prayer" rows="3"
-          placeholder="例：いつまでも元気でありますように"></textarea>
+        <input
+          id="photo"
+          type="file"
+          accept="image/*"
+        >
       </label>
 
-      <button id="saveButton">登録する</button>
+      <label>
+        祈り
+        <textarea
+          id="prayer"
+          rows="3"
+          placeholder="例：いつまでも元気でありますように"
+        ></textarea>
+      </label>
+
+      <button id="saveButton">
+        登録する
+      </button>
     </section>
 
     <section class="card">
       <h2>おいのりする人</h2>
+
       <div id="personList"></div>
     </section>
 
   </main>
 
   <script>
-    const nameInput = document.getElementById("name");
-    const displayNameInput = document.getElementById("displayName");
-    const prayerInput = document.getElementById("prayer");
-    const saveButton = document.getElementById("saveButton");
-    const personList = document.getElementById("personList");
+    const nameInput =
+      document.getElementById("name");
 
-    let people = JSON.parse(localStorage.getItem("oinorisanPeople")) || [];
+    const displayNameInput =
+      document.getElementById("displayName");
+
+    const photoInput =
+      document.getElementById("photo");
+
+    const prayerInput =
+      document.getElementById("prayer");
+
+    const saveButton =
+      document.getElementById("saveButton");
+
+    const personList =
+      document.getElementById("personList");
+
+
+    let people =
+      JSON.parse(
+        localStorage.getItem("oinorisanPeople")
+      ) || [];
+
 
     function renderPeople() {
+
       personList.innerHTML = "";
 
       if (people.length === 0) {
-        personList.innerHTML = "<p>まだ登録されていません。</p>";
+
+        personList.innerHTML =
+          '<p class="empty">まだ登録されていません。</p>';
+
         return;
       }
 
+
       people.forEach(person => {
-        const div = document.createElement("div");
+
+        const div =
+          document.createElement("div");
+
         div.className = "person";
 
+
+        const photoHTML =
+          person.photo
+            ? `
+              <img
+                class="profile-photo"
+                src="${person.photo}"
+                alt=""
+              >
+            `
+            : `
+              <div
+                class="profile-photo placeholder"
+              >
+                祈
+              </div>
+            `;
+
+
         div.innerHTML = `
-          <div class="display-name">${person.displayName || person.name}</div>
-          <div>${person.name}</div>
-          <div class="prayer">${person.prayer}</div>
+          <div class="person-row">
+
+            ${photoHTML}
+
+            <div>
+
+              <div class="display-name">
+                ${person.displayName || person.name}
+              </div>
+
+              <div class="real-name">
+                ${person.name}
+              </div>
+
+              <div class="prayer">
+                ${person.prayer || ""}
+              </div>
+
+            </div>
+
+          </div>
         `;
 
         personList.appendChild(div);
       });
     }
 
-    saveButton.addEventListener("click", () => {
-      const person = {
-        name: nameInput.value.trim(),
-        displayName: displayNameInput.value.trim(),
-        prayer: prayerInput.value.trim()
-      };
 
-      if (!person.name) {
-        alert("名前を入力してください。");
-        return;
+    saveButton.addEventListener(
+      "click",
+      () => {
+
+        const name =
+          nameInput.value.trim();
+
+        const displayName =
+          displayNameInput.value.trim();
+
+        const prayer =
+          prayerInput.value.trim();
+
+        const file =
+          photoInput.files[0];
+
+
+        if (!name) {
+
+          alert(
+            "名前を入力してください。"
+          );
+
+          return;
+        }
+
+
+        const savePerson =
+          (photoData = "") => {
+
+            const person = {
+              name: name,
+              displayName: displayName,
+              prayer: prayer,
+              photo: photoData
+            };
+
+
+            people.push(person);
+
+
+            localStorage.setItem(
+              "oinorisanPeople",
+              JSON.stringify(people)
+            );
+
+
+            nameInput.value = "";
+            displayNameInput.value = "";
+            prayerInput.value = "";
+            photoInput.value = "";
+
+
+            renderPeople();
+          };
+
+
+        if (file) {
+
+          const reader =
+            new FileReader();
+
+
+          reader.onload = () => {
+
+            savePerson(
+              reader.result
+            );
+
+          };
+
+
+          reader.readAsDataURL(file);
+
+        } else {
+
+          savePerson();
+
+        }
+
       }
+    );
 
-      people.push(person);
-      localStorage.setItem("oinorisanPeople", JSON.stringify(people));
-
-      nameInput.value = "";
-      displayNameInput.value = "";
-      prayerInput.value = "";
-
-      renderPeople();
-    });
 
     renderPeople();
 
+
     if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./service-worker.js");
-      });
+
+      window.addEventListener(
+        "load",
+        () => {
+
+          navigator.serviceWorker.register(
+            "./service-worker.js"
+          );
+
+        }
+      );
+
     }
   </script>
+
 </body>
 </html>
