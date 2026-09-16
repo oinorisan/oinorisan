@@ -97,18 +97,18 @@
       cursor: pointer;
     }
 
-    .secondary-button {
-      background: #888;
-    }
-
     button:active {
       opacity: 0.8;
     }
 
-    .anniversary-inputs {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 8px;
+    .secondary-button {
+      background: #999;
+    }
+
+    .cancel-button {
+      display: none;
+      background: #bbb;
+      color: #333;
     }
 
     .anniversary-list {
@@ -116,6 +116,11 @@
     }
 
     .anniversary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+
       background: #f5f3f0;
       border-radius: 10px;
       padding: 10px 12px;
@@ -123,8 +128,18 @@
       font-size: 14px;
     }
 
+    .anniversary-remove {
+      width: auto;
+      margin: 0;
+      padding: 6px 10px;
+      background: #ddd;
+      color: #555;
+      font-size: 12px;
+      border-radius: 7px;
+    }
+
     .person {
-      padding: 16px 0;
+      padding: 18px 0;
       border-bottom: 1px solid #eee;
     }
 
@@ -136,6 +151,11 @@
       display: flex;
       align-items: center;
       gap: 14px;
+    }
+
+    .person-info {
+      min-width: 0;
+      flex: 1;
     }
 
     .profile-photo {
@@ -183,23 +203,46 @@
       margin-top: 4px;
     }
 
+    .person-actions {
+      padding-left: 78px;
+      margin-top: 8px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .edit-button,
+    .delete-button {
+      width: auto;
+      margin-top: 0;
+      padding: 8px 14px;
+      font-size: 13px;
+      border-radius: 8px;
+    }
+
+    .edit-button {
+      background: #ddd;
+      color: #444;
+    }
+
+    .delete-button {
+      background: #eee;
+      color: #666;
+    }
+
     .empty {
       color: #888;
       font-size: 14px;
     }
-    .delete-button {
-  width: auto;
-  margin-top: 14px;
-  padding: 8px 14px;
-  background: #eee;
-  color: #666;
-  font-size: 13px;
-  border-radius: 8px;
-}
 
-.delete-button:hover {
-  background: #ddd;
-}
+    .editing-message {
+      display: none;
+      margin-bottom: 14px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #f2efe9;
+      color: #666;
+      font-size: 14px;
+    }
   </style>
 </head>
 
@@ -214,22 +257,41 @@
 
   <main>
 
-    <section class="card">
+    <section class="card" id="formCard">
       <h2>大切な人を登録</h2>
+
+      <div
+        id="editingMessage"
+        class="editing-message"
+      >
+        編集中です
+      </div>
 
       <label>
         名前
-        <input id="name" type="text" placeholder="例：山田 花子">
+        <input
+          id="name"
+          type="text"
+          placeholder="例：山田 花子"
+        >
       </label>
 
       <label>
         表示名
-        <input id="displayName" type="text" placeholder="例：お母さん">
+        <input
+          id="displayName"
+          type="text"
+          placeholder="例：お母さん"
+        >
       </label>
 
       <label>
         写真
-        <input id="photo" type="file" accept="image/*">
+        <input
+          id="photo"
+          type="file"
+          accept="image/*"
+        >
       </label>
 
       <label>
@@ -243,21 +305,22 @@
 
       <h3>記念日</h3>
 
-      <div class="anniversary-inputs">
-        <label>
-          日付
-          <input id="anniversaryDate" type="date">
-        </label>
+      <label>
+        日付
+        <input
+          id="anniversaryDate"
+          type="date"
+        >
+      </label>
 
-        <label>
-          なんの日？
-          <input
-            id="anniversaryTitle"
-            type="text"
-            placeholder="例：誕生日"
-          >
-        </label>
-      </div>
+      <label>
+        なんの日？
+        <input
+          id="anniversaryTitle"
+          type="text"
+          placeholder="例：誕生日"
+        >
+      </label>
 
       <button
         id="addAnniversaryButton"
@@ -272,8 +335,16 @@
         class="anniversary-list"
       ></div>
 
-      <button id="saveButton">
+      <button id="saveButton" type="button">
         登録する
+      </button>
+
+      <button
+        id="cancelEditButton"
+        type="button"
+        class="cancel-button"
+      >
+        編集をキャンセル
       </button>
     </section>
 
@@ -285,10 +356,17 @@
   </main>
 
   <script>
-    const nameInput = document.getElementById("name");
-    const displayNameInput = document.getElementById("displayName");
-    const photoInput = document.getElementById("photo");
-    const prayerInput = document.getElementById("prayer");
+    const nameInput =
+      document.getElementById("name");
+
+    const displayNameInput =
+      document.getElementById("displayName");
+
+    const photoInput =
+      document.getElementById("photo");
+
+    const prayerInput =
+      document.getElementById("prayer");
 
     const anniversaryDateInput =
       document.getElementById("anniversaryDate");
@@ -305,41 +383,131 @@
     const saveButton =
       document.getElementById("saveButton");
 
+    const cancelEditButton =
+      document.getElementById("cancelEditButton");
+
+    const editingMessage =
+      document.getElementById("editingMessage");
+
     const personList =
       document.getElementById("personList");
+
+    const formCard =
+      document.getElementById("formCard");
+
 
     let people =
       JSON.parse(
         localStorage.getItem("oinorisanPeople")
       ) || [];
 
+
     let currentAnniversaries = [];
+
+    let editingIndex = null;
+
+    let editingPhoto = "";
+
+
+    function escapeHTML(value) {
+      return String(value || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
 
     function formatDate(dateString) {
       if (!dateString) return "";
 
-      const date = new Date(dateString);
+      const parts =
+        dateString.split("-");
 
-      return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+      if (parts.length !== 3) {
+        return dateString;
+      }
+
+      const year =
+        Number(parts[0]);
+
+      const month =
+        Number(parts[1]);
+
+      const day =
+        Number(parts[2]);
+
+      return `${year}年${month}月${day}日`;
     }
+
+
+    function savePeople() {
+      localStorage.setItem(
+        "oinorisanPeople",
+        JSON.stringify(people)
+      );
+    }
+
 
     function renderCurrentAnniversaries() {
       anniversaryList.innerHTML = "";
 
-      currentAnniversaries.forEach(item => {
-        const div = document.createElement("div");
-        div.className = "anniversary-item";
+      if (currentAnniversaries.length === 0) {
+        return;
+      }
 
-        div.textContent =
-          `${formatDate(item.date)}　${item.title}`;
+      currentAnniversaries.forEach(
+        (item, index) => {
 
-        anniversaryList.appendChild(div);
-      });
+          const div =
+            document.createElement("div");
+
+          div.className =
+            "anniversary-item";
+
+          const text =
+            document.createElement("span");
+
+          text.textContent =
+            `${formatDate(item.date)}　${item.title}`;
+
+          const removeButton =
+            document.createElement("button");
+
+          removeButton.type = "button";
+          removeButton.className =
+            "anniversary-remove";
+
+          removeButton.textContent =
+            "削除";
+
+          removeButton.addEventListener(
+            "click",
+            () => {
+
+              currentAnniversaries.splice(
+                index,
+                1
+              );
+
+              renderCurrentAnniversaries();
+            }
+          );
+
+          div.appendChild(text);
+          div.appendChild(removeButton);
+
+          anniversaryList.appendChild(div);
+        }
+      );
     }
+
 
     addAnniversaryButton.addEventListener(
       "click",
       () => {
+
         const date =
           anniversaryDateInput.value;
 
@@ -368,115 +536,262 @@
       }
     );
 
+
     function renderPeople() {
       personList.innerHTML = "";
 
       if (people.length === 0) {
+
         personList.innerHTML =
           '<p class="empty">まだ登録されていません。</p>';
+
         return;
       }
 
-      people.forEach((person, index) => {
-        const div =
-          document.createElement("div");
 
-        div.className = "person";
+      people.forEach(
+        (person, index) => {
 
-        const photoHTML =
-          person.photo
-            ? `
-              <img
-                class="profile-photo"
-                src="${person.photo}"
-                alt=""
-              >
-            `
-            : `
-              <div
-                class="profile-photo placeholder"
-              >
-                祈
+          const div =
+            document.createElement("div");
+
+          div.className =
+            "person";
+
+
+          const displayName =
+            escapeHTML(
+              person.displayName ||
+              person.name
+            );
+
+          const realName =
+            escapeHTML(
+              person.name
+            );
+
+          const prayer =
+            escapeHTML(
+              person.prayer || ""
+            );
+
+
+          const photoHTML =
+            person.photo
+              ? `
+                <img
+                  class="profile-photo"
+                  src="${person.photo}"
+                  alt=""
+                >
+              `
+              : `
+                <div
+                  class="profile-photo placeholder"
+                >
+                  祈
+                </div>
+              `;
+
+
+          let anniversariesHTML = "";
+
+          if (
+            person.anniversaries &&
+            person.anniversaries.length > 0
+          ) {
+
+            anniversariesHTML =
+              '<div class="person-anniversaries">' +
+
+              person.anniversaries.map(
+                item => `
+                  <div class="person-anniversary">
+                    ${escapeHTML(formatDate(item.date))}
+                   　
+                    ${escapeHTML(item.title)}
+                  </div>
+                `
+              ).join("") +
+
+              "</div>";
+          }
+
+
+          div.innerHTML = `
+            <div class="person-row">
+
+              ${photoHTML}
+
+              <div class="person-info">
+
+                <div class="display-name">
+                  ${displayName}
+                </div>
+
+                <div class="real-name">
+                  ${realName}
+                </div>
+
+                <div class="prayer">
+                  ${prayer}
+                </div>
+
               </div>
-            `;
 
-        let anniversariesHTML = "";
+            </div>
 
-        if (
-          person.anniversaries &&
-          person.anniversaries.length > 0
-        ) {
-          anniversariesHTML =
-            '<div class="person-anniversaries">' +
-            person.anniversaries.map(item => `
-              <div class="person-anniversary">
-                ${formatDate(item.date)}　
-                ${item.title}
-              </div>
-            `).join("") +
-            "</div>";
+            ${anniversariesHTML}
+
+            <div class="person-actions">
+
+              <button
+                class="edit-button"
+                type="button"
+              >
+                編集
+              </button>
+
+              <button
+                class="delete-button"
+                type="button"
+              >
+                削除
+              </button>
+
+            </div>
+          `;
+
+
+          const editButton =
+            div.querySelector(
+              ".edit-button"
+            );
+
+
+          editButton.addEventListener(
+            "click",
+            () => {
+
+              editingIndex = index;
+
+              editingPhoto =
+                person.photo || "";
+
+              nameInput.value =
+                person.name || "";
+
+              displayNameInput.value =
+                person.displayName || "";
+
+              prayerInput.value =
+                person.prayer || "";
+
+              photoInput.value = "";
+
+              currentAnniversaries =
+                person.anniversaries
+                  ? person.anniversaries.map(
+                      item => ({
+                        ...item
+                      })
+                    )
+                  : [];
+
+              renderCurrentAnniversaries();
+
+              saveButton.textContent =
+                "更新する";
+
+              cancelEditButton.style.display =
+                "block";
+
+              editingMessage.style.display =
+                "block";
+
+              formCard.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+              });
+            }
+          );
+
+
+          const deleteButton =
+            div.querySelector(
+              ".delete-button"
+            );
+
+
+          deleteButton.addEventListener(
+            "click",
+            () => {
+
+              const ok =
+                confirm(
+                  `${person.displayName || person.name} を削除しますか？`
+                );
+
+              if (!ok) {
+                return;
+              }
+
+              people.splice(
+                index,
+                1
+              );
+
+              savePeople();
+
+              resetForm();
+
+              renderPeople();
+            }
+          );
+
+
+          personList.appendChild(div);
         }
-
-div.innerHTML = `
-  <div class="person-row">
-
-    ${photoHTML}
-
-    <div class="person-info">
-
-      <div class="display-name">
-        ${person.displayName || person.name}
-      </div>
-
-      <div class="real-name">
-        ${person.name}
-      </div>
-
-      <div class="prayer">
-        ${person.prayer || ""}
-      </div>
-
-    </div>
-
-  </div>
-
-  ${anniversariesHTML}
-
-  <button
-    class="delete-button"
-    data-index="${index}"
-    type="button"
-  >
-    削除
-  </button>
-`;
-
-        personList.appendChild(div);
-        const deleteButton =
-  div.querySelector(".delete-button");
-
-deleteButton.addEventListener(
-  "click",
-  () => {
-
-    const ok = confirm(
-      `${person.displayName || person.name} を削除しますか？`
-    );
-
-    if (!ok) return;
-
-    people.splice(index, 1);
-
-    localStorage.setItem(
-      "oinorisanPeople",
-      JSON.stringify(people)
-    );
-
-    renderPeople();
-  }
-);
-      });
+      );
     }
+
+
+    function resetForm() {
+
+      nameInput.value = "";
+      displayNameInput.value = "";
+      photoInput.value = "";
+      prayerInput.value = "";
+
+      anniversaryDateInput.value = "";
+      anniversaryTitleInput.value = "";
+
+      currentAnniversaries = [];
+
+      editingIndex = null;
+      editingPhoto = "";
+
+      saveButton.textContent =
+        "登録する";
+
+      cancelEditButton.style.display =
+        "none";
+
+      editingMessage.style.display =
+        "none";
+
+      renderCurrentAnniversaries();
+    }
+
+
+    cancelEditButton.addEventListener(
+      "click",
+      () => {
+
+        resetForm();
+      }
+    );
+
 
     saveButton.addEventListener(
       "click",
@@ -494,75 +809,104 @@ deleteButton.addEventListener(
         const file =
           photoInput.files[0];
 
+
         if (!name) {
-          alert("名前を入力してください。");
+
+          alert(
+            "名前を入力してください。"
+          );
+
           return;
         }
 
-        const savePerson =
-          (photoData = "") => {
+
+        const finishSave =
+          (photoData) => {
 
             const person = {
               name,
               displayName,
               prayer,
-              photo: photoData,
-              anniversaries: [
-                ...currentAnniversaries
-              ]
+              photo: photoData || "",
+              anniversaries:
+                currentAnniversaries.map(
+                  item => ({
+                    ...item
+                  })
+                )
             };
 
-            people.push(person);
 
-            localStorage.setItem(
-              "oinorisanPeople",
-              JSON.stringify(people)
-            );
+            if (editingIndex === null) {
 
-            nameInput.value = "";
-            displayNameInput.value = "";
-            prayerInput.value = "";
-            photoInput.value = "";
+              people.push(person);
 
-            anniversaryDateInput.value = "";
-            anniversaryTitleInput.value = "";
+            } else {
 
-            currentAnniversaries = [];
+              people[editingIndex] =
+                person;
+            }
 
-            renderCurrentAnniversaries();
+
+            savePeople();
+
+            resetForm();
+
             renderPeople();
           };
 
+
         if (file) {
+
           const reader =
             new FileReader();
 
           reader.onload = () => {
-            savePerson(
+
+            finishSave(
               reader.result
             );
+
           };
 
           reader.readAsDataURL(file);
 
         } else {
-          savePerson();
+
+          /*
+            編集時に新しい写真を選ばなかった場合は
+            元の写真をそのまま使用
+          */
+
+          finishSave(
+            editingIndex === null
+              ? ""
+              : editingPhoto
+          );
         }
+
       }
     );
 
+
     renderCurrentAnniversaries();
+
     renderPeople();
 
+
     if ("serviceWorker" in navigator) {
+
       window.addEventListener(
         "load",
         () => {
+
           navigator.serviceWorker.register(
             "./service-worker.js"
           );
+
         }
       );
+
     }
   </script>
 
