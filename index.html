@@ -187,6 +187,19 @@
       color: #888;
       font-size: 14px;
     }
+    .delete-button {
+  width: auto;
+  margin-top: 14px;
+  padding: 8px 14px;
+  background: #eee;
+  color: #666;
+  font-size: 13px;
+  border-radius: 8px;
+}
+
+.delete-button:hover {
+  background: #ddd;
+}
   </style>
 </head>
 
@@ -364,7 +377,7 @@
         return;
       }
 
-      people.forEach(person => {
+      people.forEach((person, index) => {
         const div =
           document.createElement("div");
 
@@ -404,33 +417,64 @@
             "</div>";
         }
 
-        div.innerHTML = `
-          <div class="person-row">
+div.innerHTML = `
+  <div class="person-row">
 
-            ${photoHTML}
+    ${photoHTML}
 
-            <div>
+    <div class="person-info">
 
-              <div class="display-name">
-                ${person.displayName || person.name}
-              </div>
+      <div class="display-name">
+        ${person.displayName || person.name}
+      </div>
 
-              <div class="real-name">
-                ${person.name}
-              </div>
+      <div class="real-name">
+        ${person.name}
+      </div>
 
-              <div class="prayer">
-                ${person.prayer || ""}
-              </div>
+      <div class="prayer">
+        ${person.prayer || ""}
+      </div>
 
-            </div>
+    </div>
 
-          </div>
+  </div>
 
-          ${anniversariesHTML}
-        `;
+  ${anniversariesHTML}
+
+  <button
+    class="delete-button"
+    data-index="${index}"
+    type="button"
+  >
+    削除
+  </button>
+`;
 
         personList.appendChild(div);
+        const deleteButton =
+  div.querySelector(".delete-button");
+
+deleteButton.addEventListener(
+  "click",
+  () => {
+
+    const ok = confirm(
+      `${person.displayName || person.name} を削除しますか？`
+    );
+
+    if (!ok) return;
+
+    people.splice(index, 1);
+
+    localStorage.setItem(
+      "oinorisanPeople",
+      JSON.stringify(people)
+    );
+
+    renderPeople();
+  }
+);
       });
     }
 
