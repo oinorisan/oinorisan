@@ -6,12 +6,183 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
   <title>おいのりさん™</title>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      background: #faf8f5;
+      color: #333;
+    }
+
+    header {
+      padding: 24px 20px 12px;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 6px;
+    }
+
+    .tagline {
+      color: #777;
+      font-size: 14px;
+    }
+
+    main {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    input, textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 18px;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: #555;
+      color: white;
+      font-size: 16px;
+    }
+
+    .person {
+      padding: 14px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .person:last-child {
+      border-bottom: none;
+    }
+
+    .display-name {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .prayer {
+      margin-top: 4px;
+      color: #666;
+    }
+  </style>
 </head>
+
 <body>
-  <h1>おいのりさん™</h1>
-  <p>大切な人に、祈りを捧げる。</p>
+  <header>
+    <h1>おいのりさん™</h1>
+    <div class="tagline">大切な人に、祈りを捧げる。</div>
+  </header>
+
+  <main>
+
+    <section class="card">
+      <h2>大切な人を登録</h2>
+
+      <label>
+        名前
+        <input id="name" type="text" placeholder="例：山田 花子">
+      </label>
+
+      <label>
+        表示名
+        <input id="displayName" type="text" placeholder="例：お母さん">
+      </label>
+
+      <label>
+        祈り
+        <textarea id="prayer" rows="3"
+          placeholder="例：いつまでも元気でありますように"></textarea>
+      </label>
+
+      <button id="saveButton">登録する</button>
+    </section>
+
+    <section class="card">
+      <h2>おいのりする人</h2>
+      <div id="personList"></div>
+    </section>
+
+  </main>
 
   <script>
+    const nameInput = document.getElementById("name");
+    const displayNameInput = document.getElementById("displayName");
+    const prayerInput = document.getElementById("prayer");
+    const saveButton = document.getElementById("saveButton");
+    const personList = document.getElementById("personList");
+
+    let people = JSON.parse(localStorage.getItem("oinorisanPeople")) || [];
+
+    function renderPeople() {
+      personList.innerHTML = "";
+
+      if (people.length === 0) {
+        personList.innerHTML = "<p>まだ登録されていません。</p>";
+        return;
+      }
+
+      people.forEach(person => {
+        const div = document.createElement("div");
+        div.className = "person";
+
+        div.innerHTML = `
+          <div class="display-name">${person.displayName || person.name}</div>
+          <div>${person.name}</div>
+          <div class="prayer">${person.prayer}</div>
+        `;
+
+        personList.appendChild(div);
+      });
+    }
+
+    saveButton.addEventListener("click", () => {
+      const person = {
+        name: nameInput.value.trim(),
+        displayName: displayNameInput.value.trim(),
+        prayer: prayerInput.value.trim()
+      };
+
+      if (!person.name) {
+        alert("名前を入力してください。");
+        return;
+      }
+
+      people.push(person);
+      localStorage.setItem("oinorisanPeople", JSON.stringify(people));
+
+      nameInput.value = "";
+      displayNameInput.value = "";
+      prayerInput.value = "";
+
+      renderPeople();
+    });
+
+    renderPeople();
+
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker.register("./service-worker.js");
