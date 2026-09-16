@@ -1,11 +1,12 @@
-const CACHE_NAME = "oinorisan-dev-v2";
+const CACHE_NAME = "oinorisan-dev-v3";
 
 const STATIC_FILES = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
   "./icons/icon-192.png",
-  "./icons/icon-512.png"
+  "./icons/icon-512.png",
+  "./audio/oinorisan.mp3"
 ];
 
 self.addEventListener("install", event => {
