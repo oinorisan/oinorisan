@@ -1,5 +1,7 @@
 const CACHE_NAME = "oinorisan-dev-v2";
 
+const photoInput = document.getElementById("photo");
+
 const STATIC_FILES = [
   "./",
   "./index.html",
