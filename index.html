@@ -4,25 +4,23 @@
 <head>
   <meta charset="utf-8">
 
-  <!--
-    スマホ表示用
-  -->
+  <!-- =========================================================
+       スマホ表示設定
+       ========================================================= -->
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1"
   >
 
-  <!--
-    PWA用マニフェスト
-  -->
+  <!-- =========================================================
+       PWA
+       ========================================================= -->
   <link
     rel="manifest"
     href="manifest.webmanifest"
   >
 
-  <!--
-    iPhoneホーム画面用アイコン
-  -->
+  <!-- iPhone ホーム画面用アイコン -->
   <link
     rel="apple-touch-icon"
     href="icons/icon-192.png"
@@ -34,7 +32,7 @@
   <style>
 
     /* =========================================================
-       全体
+       基本色
        ========================================================= */
 
     :root {
@@ -47,6 +45,10 @@
       --button: #555555;
     }
 
+
+    /* =========================================================
+       ページ全体
+       ========================================================= */
 
     body {
       font-family:
@@ -348,14 +350,6 @@
 
 
     .anniversary-item {
-      display: flex;
-
-      justify-content: space-between;
-
-      align-items: center;
-
-      gap: 8px;
-
       background: var(--soft);
 
       border-radius: 10px;
@@ -369,8 +363,6 @@
 
 
     .anniversary-text {
-      flex: 1;
-
       line-height: 1.6;
     }
 
@@ -386,6 +378,20 @@
     }
 
 
+    /*
+      記念日1件ごとの
+      編集・削除ボタン
+    */
+    .anniversary-actions {
+      display: flex;
+
+      gap: 8px;
+
+      margin-top: 8px;
+    }
+
+
+    .anniversary-edit,
     .anniversary-remove {
       width: auto;
 
@@ -393,19 +399,49 @@
 
       padding: 6px 10px;
 
-      background: #ddd;
-
-      color: #555;
-
       font-size: 12px;
 
       border-radius: 7px;
     }
 
 
+    .anniversary-edit {
+      background: #d9d9d9;
+
+      color: #444;
+    }
+
+
+    .anniversary-remove {
+      background: #e8e8e8;
+
+      color: #666;
+    }
+
+
+    /*
+      記念日編集中のメッセージ
+    */
+    .anniversary-editing-message {
+      display: none;
+
+      margin-top: 12px;
+
+      padding: 9px 11px;
+
+      background: #f2efe9;
+
+      color: #666;
+
+      border-radius: 9px;
+
+      font-size: 13px;
+    }
+
+
 
     /* =========================================================
-       人物一覧
+       登録済み人物
        ========================================================= */
 
     .person {
@@ -439,7 +475,7 @@
 
 
     /* =========================================================
-       写真
+       プロフィール写真
        ========================================================= */
 
     .profile-photo {
@@ -534,7 +570,7 @@
 
 
     /* =========================================================
-       編集・削除
+       人物の編集・削除
        ========================================================= */
 
     .person-actions {
@@ -615,8 +651,8 @@
 
 
     /*
-      小さい画面では
-      左側の余白を減らします
+      スマホでは
+      記念日・ボタンの左余白を減らします
     */
     @media (
       max-width: 480px
@@ -671,11 +707,6 @@
         今日のおいのり
       </h2>
 
-      <!--
-        JavaScriptで
-        今日に該当する記念日を表示します
-      -->
-
       <div id="todayPrayerList"></div>
 
     </section>
@@ -692,10 +723,6 @@
         もうすぐのおいのり
       </h2>
 
-      <!--
-        今後30日以内の記念日を表示します
-      -->
-
       <div id="upcomingPrayerList"></div>
 
     </section>
@@ -703,7 +730,7 @@
 
 
     <!-- =====================================================
-         登録・編集フォーム
+         人物登録・編集フォーム
          ===================================================== -->
 
     <section
@@ -717,7 +744,7 @@
 
 
       <!--
-        編集中だけ表示
+        人物編集中だけ表示
       -->
       <div
         id="editingMessage"
@@ -809,9 +836,20 @@
       </h3>
 
 
+      <!--
+        記念日編集中だけ表示
+      -->
+      <div
+        id="anniversaryEditingMessage"
+        class="anniversary-editing-message"
+      >
+        記念日を編集中です
+      </div>
+
+
 
       <!-- ===================================================
-           日付形式
+           日付の種類
            =================================================== -->
 
       <label>
@@ -835,7 +873,7 @@
 
 
       <!-- ===================================================
-           年月日入力
+           年月日
            =================================================== -->
 
       <div id="fullDateArea">
@@ -856,7 +894,7 @@
 
 
       <!-- ===================================================
-           月日だけ入力
+           月日だけ
            =================================================== -->
 
       <div id="monthDayArea">
@@ -895,7 +933,7 @@
 
 
       <!-- ===================================================
-           記念日の名前
+           なんの日？
            =================================================== -->
 
       <label>
@@ -913,26 +951,12 @@
 
 
       <!-- ===================================================
-           繰り返し
+           くり返し
            =================================================== -->
 
       <label>
 
         くり返し
-
-        <!--
-          毎年
-            誕生日
-            命日
-            結婚記念日
-            など
-
-          その日だけ
-            試験日
-            合格発表日
-            手術日
-            など
-        -->
 
         <select id="anniversaryRepeat">
 
@@ -957,14 +981,6 @@
       <label>
 
         通知
-
-        <!--
-          この段階では
-          通知設定を保存するだけです。
-
-          実際の通知処理は
-          後から追加できます。
-        -->
 
         <select id="anniversaryNotification">
 
@@ -995,7 +1011,7 @@
 
 
       <!-- ===================================================
-           記念日追加
+           記念日追加 / 更新
            =================================================== -->
 
       <button
@@ -1009,9 +1025,23 @@
 
 
       <!--
-        入力中記念日一覧
-      -->
+        記念日編集キャンセル
 
+        記念日編集中のみ表示
+      -->
+      <button
+        id="cancelAnniversaryEditButton"
+        type="button"
+        class="cancel-button"
+      >
+        記念日の編集をキャンセル
+      </button>
+
+
+
+      <!--
+        入力中の記念日一覧
+      -->
       <div
         id="anniversaryList"
         class="anniversary-list"
@@ -1020,7 +1050,7 @@
 
 
       <!-- ===================================================
-           人物保存
+           人物の保存
            =================================================== -->
 
       <button
@@ -1033,7 +1063,7 @@
 
 
       <!-- ===================================================
-           編集キャンセル
+           人物編集キャンセル
            =================================================== -->
 
       <button
@@ -1049,7 +1079,7 @@
 
 
     <!-- =====================================================
-         登録済み人物
+         登録済み人物一覧
          ===================================================== -->
 
     <section class="card">
@@ -1069,7 +1099,7 @@
   <script>
 
     /* =======================================================
-       HTML要素
+       人物入力欄
        ======================================================= */
 
     const nameInput =
@@ -1098,7 +1128,7 @@
 
 
     /* =======================================================
-       記念日
+       記念日入力欄
        ======================================================= */
 
     const anniversaryMode =
@@ -1161,6 +1191,18 @@
       );
 
 
+    const cancelAnniversaryEditButton =
+      document.getElementById(
+        "cancelAnniversaryEditButton"
+      );
+
+
+    const anniversaryEditingMessage =
+      document.getElementById(
+        "anniversaryEditingMessage"
+      );
+
+
     const anniversaryList =
       document.getElementById(
         "anniversaryList"
@@ -1169,7 +1211,7 @@
 
 
     /* =======================================================
-       その他
+       人物保存・編集
        ======================================================= */
 
     const saveButton =
@@ -1202,6 +1244,11 @@
       );
 
 
+
+    /* =======================================================
+       今日・もうすぐ
+       ======================================================= */
+
     const todayPrayerList =
       document.getElementById(
         "todayPrayerList"
@@ -1216,7 +1263,7 @@
 
 
     /* =======================================================
-       保存済み人物を読み込み
+       保存済み人物データ
        ======================================================= */
 
     let people =
@@ -1227,22 +1274,34 @@
       ) || [];
 
 
-    /*
-      現在入力中の記念日
-    */
+
+    /* =======================================================
+       現在フォーム上で編集中の記念日一覧
+       ======================================================= */
+
     let currentAnniversaries =
       [];
 
 
+
+    /* =======================================================
+       人物編集状態
+       ======================================================= */
+
     /*
-      編集中人物の番号
+      null
+        → 新規登録
+
+      0以上
+        → people 配列の何番目を編集中か
     */
     let editingIndex =
       null;
 
 
     /*
-      編集前の写真
+      人物編集中、
+      元の写真を保持しておきます。
     */
     let editingPhoto =
       "";
@@ -1250,7 +1309,23 @@
 
 
     /* =======================================================
-       HTML特殊文字
+       記念日編集状態
+       ======================================================= */
+
+    /*
+      null
+        → 新しい記念日を追加中
+
+      0以上
+        → currentAnniversaries の何番目を編集中か
+    */
+    let editingAnniversaryIndex =
+      null;
+
+
+
+    /* =======================================================
+       HTML文字を安全に表示
        ======================================================= */
 
     function escapeHTML(
@@ -1290,7 +1365,8 @@
 
 
     /* =======================================================
-       YYYY-MM-DD → 日本語
+       YYYY-MM-DD を
+       日本語表記に変換
        ======================================================= */
 
     function formatDate(
@@ -1340,7 +1416,7 @@
 
 
     /* =======================================================
-       記念日の表示
+       記念日の日付表示
        ======================================================= */
 
     function formatAnniversary(
@@ -1372,7 +1448,7 @@
 
 
     /* =======================================================
-       通知表示
+       通知設定表示
        ======================================================= */
 
     function formatNotification(
@@ -1419,7 +1495,7 @@
 
 
     /* =======================================================
-       繰り返し表示
+       くり返し表示
        ======================================================= */
 
     function formatRepeat(
@@ -1440,7 +1516,7 @@
 
 
     /* =======================================================
-       localStorageへ保存
+       localStorageへ人物データ保存
        ======================================================= */
 
     function savePeople() {
@@ -1459,21 +1535,8 @@
 
 
     /* =======================================================
-       古いデータの補完
+       古いデータを補完
        ======================================================= */
-
-    /*
-      これまでのバージョンで保存した
-      データには
-
-      repeat
-      notification
-
-      が無い場合があります。
-
-      そのため読み込み時に
-      初期値を補います。
-    */
 
     function normalizePeople() {
 
@@ -1481,13 +1544,16 @@
         people.map(
           person => {
 
+
             const anniversaries =
               Array.isArray(
                 person.anniversaries
               )
 
                 ? person.anniversaries.map(
+
                     item => ({
+
                       ...item,
 
                       repeat:
@@ -1497,16 +1563,21 @@
                       notification:
                         item.notification
                         ?? "none"
+
                     })
+
                   )
 
                 : [];
 
 
             return {
+
               ...person,
 
-              anniversaries
+              anniversaries:
+                anniversaries
+
             };
 
           }
@@ -1519,7 +1590,8 @@
 
 
     /* =======================================================
-       日付入力切り替え
+       年月日 / 月日だけ
+       入力欄切り替え
        ======================================================= */
 
     anniversaryMode.addEventListener(
@@ -1555,7 +1627,96 @@
 
 
     /* =======================================================
-       入力中記念日一覧
+       記念日入力欄だけを初期化
+       ======================================================= */
+
+    function resetAnniversaryForm() {
+
+      /*
+        日付形式
+      */
+      anniversaryMode.value =
+        "full";
+
+
+      fullDateArea.style.display =
+        "block";
+
+
+      monthDayArea.style.display =
+        "none";
+
+
+      /*
+        日付
+      */
+      anniversaryDateInput.value =
+        "";
+
+
+      anniversaryMonthInput.value =
+        "";
+
+
+      anniversaryDayInput.value =
+        "";
+
+
+      /*
+        タイトル
+      */
+      anniversaryTitleInput.value =
+        "";
+
+
+      /*
+        毎年
+      */
+      anniversaryRepeatInput.value =
+        "yearly";
+
+
+      /*
+        通知しない
+      */
+      anniversaryNotificationInput.value =
+        "none";
+
+
+      /*
+        記念日編集状態を解除
+      */
+      editingAnniversaryIndex =
+        null;
+
+
+      /*
+        ボタン表示を
+        「記念日を追加」へ戻す
+      */
+      addAnniversaryButton.textContent =
+        "記念日を追加";
+
+
+      /*
+        編集中表示を隠す
+      */
+      anniversaryEditingMessage.style.display =
+        "none";
+
+
+      /*
+        記念日編集キャンセルも隠す
+      */
+      cancelAnniversaryEditButton.style.display =
+        "none";
+
+    }
+
+
+
+    /* =======================================================
+       入力中記念日一覧表示
        ======================================================= */
 
     function renderCurrentAnniversaries() {
@@ -1569,6 +1730,9 @@
         (item, index) => {
 
 
+          /*
+            1件分の箱
+          */
           const div =
             document.createElement(
               "div"
@@ -1579,6 +1743,9 @@
             "anniversary-item";
 
 
+          /*
+            日付・タイトル
+          */
           const text =
             document.createElement(
               "div"
@@ -1599,6 +1766,9 @@
             `${formatAnniversary(item)}　${item.title}`;
 
 
+          /*
+            毎年 / 通知
+          */
           const meta =
             document.createElement(
               "span"
@@ -1623,10 +1793,189 @@
           );
 
 
+          div.appendChild(
+            text
+          );
 
-          /*
-            削除ボタン
-          */
+
+
+          /* ---------------------------------------------------
+             ボタンエリア
+             --------------------------------------------------- */
+
+          const actions =
+            document.createElement(
+              "div"
+            );
+
+
+          actions.className =
+            "anniversary-actions";
+
+
+
+          /* ---------------------------------------------------
+             記念日編集ボタン
+             --------------------------------------------------- */
+
+          const editButton =
+            document.createElement(
+              "button"
+            );
+
+
+          editButton.type =
+            "button";
+
+
+          editButton.className =
+            "anniversary-edit";
+
+
+          editButton.textContent =
+            "編集";
+
+
+          editButton.addEventListener(
+
+            "click",
+
+            () => {
+
+              /*
+                編集中の記念日番号を保存
+              */
+              editingAnniversaryIndex =
+                index;
+
+
+              /*
+                日付形式をフォームへ戻す
+              */
+              anniversaryMode.value =
+                item.type === "monthday"
+                  ? "monthday"
+                  : "full";
+
+
+              /*
+                表示欄も切り替える
+              */
+              if (
+                anniversaryMode.value ===
+                "monthday"
+              ) {
+
+                fullDateArea.style.display =
+                  "none";
+
+
+                monthDayArea.style.display =
+                  "block";
+
+
+                anniversaryMonthInput.value =
+                  item.month || "";
+
+
+                anniversaryDayInput.value =
+                  item.day || "";
+
+
+                anniversaryDateInput.value =
+                  "";
+
+              } else {
+
+                fullDateArea.style.display =
+                  "block";
+
+
+                monthDayArea.style.display =
+                  "none";
+
+
+                anniversaryDateInput.value =
+                  item.date || "";
+
+
+                anniversaryMonthInput.value =
+                  "";
+
+
+                anniversaryDayInput.value =
+                  "";
+
+              }
+
+
+              /*
+                記念日名
+              */
+              anniversaryTitleInput.value =
+                item.title || "";
+
+
+              /*
+                くり返し
+              */
+              anniversaryRepeatInput.value =
+                item.repeat || "yearly";
+
+
+              /*
+                通知
+              */
+              anniversaryNotificationInput.value =
+                String(
+                  item.notification
+                  ?? "none"
+                );
+
+
+              /*
+                ボタン名変更
+              */
+              addAnniversaryButton.textContent =
+                "記念日を更新";
+
+
+              /*
+                編集中表示
+              */
+              anniversaryEditingMessage.style.display =
+                "block";
+
+
+              /*
+                キャンセルボタン表示
+              */
+              cancelAnniversaryEditButton.style.display =
+                "block";
+
+
+              /*
+                記念日入力部分まで
+                少し上にスクロール
+              */
+              anniversaryTitleInput.scrollIntoView({
+
+                behavior:
+                  "smooth",
+
+                block:
+                  "center"
+
+              });
+
+            }
+          );
+
+
+
+          /* ---------------------------------------------------
+             記念日削除ボタン
+             --------------------------------------------------- */
 
           const removeButton =
             document.createElement(
@@ -1652,25 +2001,59 @@
 
             () => {
 
+
+              const ok =
+                confirm(
+
+                  `「${item.title}」を削除しますか？`
+
+                );
+
+
+              if (!ok) {
+                return;
+              }
+
+
+              /*
+                削除
+              */
               currentAnniversaries.splice(
                 index,
                 1
               );
 
 
+              /*
+                今編集していた記念日を
+                削除した場合もあるので
+                記念日フォームを初期化
+              */
+              resetAnniversaryForm();
+
+
+              /*
+                再表示
+              */
               renderCurrentAnniversaries();
 
             }
           );
 
 
-          div.appendChild(
-            text
+
+          actions.appendChild(
+            editButton
+          );
+
+
+          actions.appendChild(
+            removeButton
           );
 
 
           div.appendChild(
-            removeButton
+            actions
           );
 
 
@@ -1680,12 +2063,13 @@
 
         }
       );
+
     }
 
 
 
     /* =======================================================
-       記念日追加
+       記念日追加 / 更新
        ======================================================= */
 
     addAnniversaryButton.addEventListener(
@@ -1695,23 +2079,35 @@
       () => {
 
 
+        /*
+          タイトル
+        */
         const title =
           anniversaryTitleInput
             .value
             .trim();
 
 
+        /*
+          くり返し
+        */
         const repeat =
           anniversaryRepeatInput
             .value;
 
 
+        /*
+          通知
+        */
         const notification =
           anniversaryNotificationInput
             .value;
 
 
 
+        /*
+          記念日名は必須
+        */
         if (!title) {
 
           alert(
@@ -1723,6 +2119,9 @@
 
 
 
+        /*
+          作成する記念日オブジェクト
+        */
         let anniversary;
 
 
@@ -1735,6 +2134,7 @@
           anniversaryMode.value
           === "full"
         ) {
+
 
           const date =
             anniversaryDateInput.value;
@@ -1818,13 +2218,6 @@
             title:
               title,
 
-            /*
-              月日だけの場合、
-              基本的には毎年扱いが自然です。
-
-              ただし入力された設定は
-              そのまま保存します。
-            */
             repeat:
               repeat,
 
@@ -1837,41 +2230,64 @@
 
 
 
-        currentAnniversaries.push(
-          anniversary
-        );
+        /* ---------------------------------------------------
+           新規追加
+           --------------------------------------------------- */
+
+        if (
+          editingAnniversaryIndex
+          === null
+        ) {
+
+          currentAnniversaries.push(
+            anniversary
+          );
+
+
+        /* ---------------------------------------------------
+           編集中記念日を更新
+           --------------------------------------------------- */
+
+        } else {
+
+          currentAnniversaries[
+            editingAnniversaryIndex
+          ] = anniversary;
+
+        }
 
 
 
         /*
-          記念日入力欄をリセット
+          記念日入力フォームを初期化
         */
-
-        anniversaryDateInput.value =
-          "";
+        resetAnniversaryForm();
 
 
-        anniversaryMonthInput.value =
-          "";
-
-
-        anniversaryDayInput.value =
-          "";
-
-
-        anniversaryTitleInput.value =
-          "";
-
-
-        anniversaryRepeatInput.value =
-          "yearly";
-
-
-        anniversaryNotificationInput.value =
-          "none";
-
-
+        /*
+          一覧再表示
+        */
         renderCurrentAnniversaries();
+
+      }
+    );
+
+
+
+    /* =======================================================
+       記念日編集キャンセル
+       ======================================================= */
+
+    cancelAnniversaryEditButton.addEventListener(
+
+      "click",
+
+      () => {
+
+        /*
+          入力欄を新規記念日状態へ戻す
+        */
+        resetAnniversaryForm();
 
       }
     );
@@ -1891,7 +2307,6 @@
         時刻によるズレを防ぐため
         今日を0時にします
       */
-
       const base =
         new Date(
           today.getFullYear(),
@@ -1900,14 +2315,16 @@
         );
 
 
-      /*
-        月日だけの場合
-      */
+
+      /* -----------------------------------------------------
+         月日だけ
+         ----------------------------------------------------- */
 
       if (
         item.type ===
         "monthday"
       ) {
+
 
         let candidate =
           new Date(
@@ -1919,9 +2336,8 @@
 
         /*
           今年分が過ぎていたら
-          来年へ
+          来年
         */
-
         if (
           candidate < base
         ) {
@@ -1932,6 +2348,7 @@
               Number(item.month) - 1,
               Number(item.day)
             );
+
         }
 
 
@@ -1940,14 +2357,15 @@
 
 
 
-      /*
-        年月日
-      */
+      /* -----------------------------------------------------
+         年月日
+         ----------------------------------------------------- */
 
       if (
         item.type ===
         "full"
       ) {
+
 
         const parts =
           item.date
@@ -1983,17 +2401,13 @@
 
 
         /*
-          毎年の場合
-
-          元の年は残しつつ、
-          次回表示では今年または来年の
-          月日として扱います。
+          毎年
         */
-
         if (
           item.repeat ===
           "yearly"
         ) {
+
 
           let candidate =
             new Date(
@@ -2013,6 +2427,7 @@
                 month - 1,
                 day
               );
+
           }
 
 
@@ -2024,12 +2439,12 @@
         /*
           その日だけ
         */
-
         return new Date(
           originalYear,
           month - 1,
           day
         );
+
       }
 
 
@@ -2071,12 +2486,14 @@
 
 
       return Math.round(
+
         (
           to.getTime() -
           from.getTime()
         )
         /
         oneDay
+
       );
     }
 
@@ -2132,10 +2549,6 @@
                 );
 
 
-              /*
-                今日だけ抽出
-              */
-
               if (
                 diff === 0
               ) {
@@ -2159,10 +2572,6 @@
 
 
 
-      /*
-        今日の記念日なし
-      */
-
       if (
         results.length === 0
       ) {
@@ -2178,10 +2587,6 @@
       }
 
 
-
-      /*
-        今日の記念日を表示
-      */
 
       results.forEach(
         result => {
@@ -2256,20 +2661,19 @@
             `;
 
 
-          /*
-            今は仮動作。
-
-            後でここを
-            60秒のおいのり画面へ
-            つなげます。
-          */
-
           const prayButton =
             div.querySelector(
               ".pray-button"
             );
 
 
+          /*
+            現段階では仮動作。
+
+            次にここを
+            60秒のおいのり画面へ
+            接続できます。
+          */
           prayButton.addEventListener(
 
             "click",
@@ -2344,12 +2748,9 @@
                 );
 
 
-
               /*
-                過去の単発イベントは
-                表示しません
+                過去の単発イベントは除外
               */
-
               if (
                 diff < 0
               ) {
@@ -2357,13 +2758,10 @@
               }
 
 
-
               /*
                 今日分は
-                「今日のおいのり」に出るので
-                ここでは除外
+                今日のおいのりに表示
               */
-
               if (
                 diff === 0
               ) {
@@ -2371,12 +2769,9 @@
               }
 
 
-
               /*
-                ひとまず
-                30日以内を表示
+                30日以内
               */
-
               if (
                 diff <= 30
               ) {
@@ -2405,9 +2800,8 @@
 
 
       /*
-        日付順
+        日付の近い順
       */
-
       results.sort(
         (a, b) =>
           a.occurrence -
@@ -2509,7 +2903,7 @@
 
 
     /* =======================================================
-       人物一覧
+       登録済み人物一覧
        ======================================================= */
 
     function renderPeople() {
@@ -2596,7 +2990,7 @@
 
 
           /* -------------------------------------------------
-             記念日
+             記念日一覧
              ------------------------------------------------- */
 
           let anniversariesHTML =
@@ -2717,7 +3111,7 @@
 
 
           /* -------------------------------------------------
-             編集
+             人物編集
              ------------------------------------------------- */
 
           const editButton =
@@ -2757,7 +3151,10 @@
                 "";
 
 
-
+              /*
+                人物の記念日を
+                編集用配列へコピー
+              */
               currentAnniversaries =
 
                 person.anniversaries
@@ -2783,11 +3180,21 @@
                   : [];
 
 
+              /*
+                記念日編集中状態は解除
+              */
+              resetAnniversaryForm();
 
+
+              /*
+                記念日一覧再表示
+              */
               renderCurrentAnniversaries();
 
 
-
+              /*
+                人物編集モード
+              */
               saveButton.textContent =
                 "更新する";
 
@@ -2800,7 +3207,9 @@
                 "block";
 
 
-
+              /*
+                上のフォームへ
+              */
               formCard.scrollIntoView({
 
                 behavior:
@@ -2817,7 +3226,7 @@
 
 
           /* -------------------------------------------------
-             削除
+             人物削除
              ------------------------------------------------- */
 
           const deleteButton =
@@ -2864,7 +3273,6 @@
           );
 
 
-
           personList.appendChild(
             div
           );
@@ -2876,11 +3284,14 @@
 
 
     /* =======================================================
-       フォーム初期化
+       人物フォーム全体初期化
        ======================================================= */
 
     function resetForm() {
 
+      /*
+        人物情報
+      */
       nameInput.value =
         "";
 
@@ -2897,46 +3308,22 @@
         "";
 
 
-      anniversaryMode.value =
-        "full";
-
-
-      fullDateArea.style.display =
-        "block";
-
-
-      monthDayArea.style.display =
-        "none";
-
-
-      anniversaryDateInput.value =
-        "";
-
-
-      anniversaryMonthInput.value =
-        "";
-
-
-      anniversaryDayInput.value =
-        "";
-
-
-      anniversaryTitleInput.value =
-        "";
-
-
-      anniversaryRepeatInput.value =
-        "yearly";
-
-
-      anniversaryNotificationInput.value =
-        "none";
-
-
+      /*
+        記念日一覧
+      */
       currentAnniversaries =
         [];
 
 
+      /*
+        記念日入力欄も初期化
+      */
+      resetAnniversaryForm();
+
+
+      /*
+        人物編集状態解除
+      */
       editingIndex =
         null;
 
@@ -2945,6 +3332,9 @@
         "";
 
 
+      /*
+        表示を新規登録へ戻す
+      */
       saveButton.textContent =
         "登録する";
 
@@ -2957,6 +3347,9 @@
         "none";
 
 
+      /*
+        記念日一覧再表示
+      */
       renderCurrentAnniversaries();
 
     }
@@ -2964,7 +3357,7 @@
 
 
     /* =======================================================
-       編集キャンセル
+       人物編集キャンセル
        ======================================================= */
 
     cancelEditButton.addEventListener(
@@ -3057,6 +3450,9 @@
 
 
 
+            /*
+              新規登録
+            */
             if (
               editingIndex ===
               null
@@ -3066,6 +3462,10 @@
                 person
               );
 
+
+            /*
+              人物更新
+            */
             } else {
 
               people[
@@ -3075,13 +3475,21 @@
             }
 
 
-
+            /*
+              保存
+            */
             savePeople();
 
 
+            /*
+              フォーム初期化
+            */
             resetForm();
 
 
+            /*
+              全画面更新
+            */
             renderAll();
 
           };
@@ -3138,7 +3546,7 @@
 
 
     /* =======================================================
-       全表示更新
+       全画面更新
        ======================================================= */
 
     function renderAll() {
@@ -3158,23 +3566,26 @@
        ======================================================= */
 
     /*
-      古いデータを補完
+      古い保存データを補完
     */
-
     normalizePeople();
 
 
     /*
-      入力中記念日
+      記念日フォーム初期化
     */
+    resetAnniversaryForm();
 
+
+    /*
+      入力中記念日一覧
+    */
     renderCurrentAnniversaries();
 
 
     /*
-      各画面表示
+      ページ各部表示
     */
-
     renderAll();
 
 
