@@ -17,7 +17,6 @@
         "Hiragino Sans",
         "Yu Gothic",
         sans-serif;
-
       margin: 0;
       background: #faf8f5;
       color: #333;
@@ -36,6 +35,12 @@
     h2 {
       margin-top: 0;
       font-size: 20px;
+    }
+
+    h3 {
+      margin-top: 20px;
+      margin-bottom: 8px;
+      font-size: 16px;
     }
 
     .tagline {
@@ -92,8 +97,30 @@
       cursor: pointer;
     }
 
+    .secondary-button {
+      background: #888;
+    }
+
     button:active {
       opacity: 0.8;
+    }
+
+    .anniversary-inputs {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .anniversary-list {
+      margin-top: 12px;
+    }
+
+    .anniversary-item {
+      background: #f5f3f0;
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-top: 8px;
+      font-size: 14px;
     }
 
     .person {
@@ -145,6 +172,17 @@
       line-height: 1.6;
     }
 
+    .person-anniversaries {
+      margin-top: 12px;
+      padding-left: 78px;
+    }
+
+    .person-anniversary {
+      font-size: 14px;
+      color: #666;
+      margin-top: 4px;
+    }
+
     .empty {
       color: #888;
       font-size: 14px;
@@ -168,29 +206,17 @@
 
       <label>
         名前
-        <input
-          id="name"
-          type="text"
-          placeholder="例：山田 花子"
-        >
+        <input id="name" type="text" placeholder="例：山田 花子">
       </label>
 
       <label>
         表示名
-        <input
-          id="displayName"
-          type="text"
-          placeholder="例：お母さん"
-        >
+        <input id="displayName" type="text" placeholder="例：お母さん">
       </label>
 
       <label>
         写真
-        <input
-          id="photo"
-          type="file"
-          accept="image/*"
-        >
+        <input id="photo" type="file" accept="image/*">
       </label>
 
       <label>
@@ -202,6 +228,37 @@
         ></textarea>
       </label>
 
+      <h3>記念日</h3>
+
+      <div class="anniversary-inputs">
+        <label>
+          日付
+          <input id="anniversaryDate" type="date">
+        </label>
+
+        <label>
+          なんの日？
+          <input
+            id="anniversaryTitle"
+            type="text"
+            placeholder="例：誕生日"
+          >
+        </label>
+      </div>
+
+      <button
+        id="addAnniversaryButton"
+        type="button"
+        class="secondary-button"
+      >
+        記念日を追加
+      </button>
+
+      <div
+        id="anniversaryList"
+        class="anniversary-list"
+      ></div>
+
       <button id="saveButton">
         登録する
       </button>
@@ -209,24 +266,28 @@
 
     <section class="card">
       <h2>おいのりする人</h2>
-
       <div id="personList"></div>
     </section>
 
   </main>
 
   <script>
-    const nameInput =
-      document.getElementById("name");
+    const nameInput = document.getElementById("name");
+    const displayNameInput = document.getElementById("displayName");
+    const photoInput = document.getElementById("photo");
+    const prayerInput = document.getElementById("prayer");
 
-    const displayNameInput =
-      document.getElementById("displayName");
+    const anniversaryDateInput =
+      document.getElementById("anniversaryDate");
 
-    const photoInput =
-      document.getElementById("photo");
+    const anniversaryTitleInput =
+      document.getElementById("anniversaryTitle");
 
-    const prayerInput =
-      document.getElementById("prayer");
+    const addAnniversaryButton =
+      document.getElementById("addAnniversaryButton");
+
+    const anniversaryList =
+      document.getElementById("anniversaryList");
 
     const saveButton =
       document.getElementById("saveButton");
@@ -234,33 +295,80 @@
     const personList =
       document.getElementById("personList");
 
-
     let people =
       JSON.parse(
         localStorage.getItem("oinorisanPeople")
       ) || [];
 
+    let currentAnniversaries = [];
+
+    function formatDate(dateString) {
+      if (!dateString) return "";
+
+      const date = new Date(dateString);
+
+      return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+    }
+
+    function renderCurrentAnniversaries() {
+      anniversaryList.innerHTML = "";
+
+      currentAnniversaries.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "anniversary-item";
+
+        div.textContent =
+          `${formatDate(item.date)}　${item.title}`;
+
+        anniversaryList.appendChild(div);
+      });
+    }
+
+    addAnniversaryButton.addEventListener(
+      "click",
+      () => {
+        const date =
+          anniversaryDateInput.value;
+
+        const title =
+          anniversaryTitleInput.value.trim();
+
+        if (!date) {
+          alert("日付を入力してください。");
+          return;
+        }
+
+        if (!title) {
+          alert("記念日の名前を入力してください。");
+          return;
+        }
+
+        currentAnniversaries.push({
+          date,
+          title
+        });
+
+        anniversaryDateInput.value = "";
+        anniversaryTitleInput.value = "";
+
+        renderCurrentAnniversaries();
+      }
+    );
 
     function renderPeople() {
-
       personList.innerHTML = "";
 
       if (people.length === 0) {
-
         personList.innerHTML =
           '<p class="empty">まだ登録されていません。</p>';
-
         return;
       }
 
-
       people.forEach(person => {
-
         const div =
           document.createElement("div");
 
         div.className = "person";
-
 
         const photoHTML =
           person.photo
@@ -279,6 +387,22 @@
               </div>
             `;
 
+        let anniversariesHTML = "";
+
+        if (
+          person.anniversaries &&
+          person.anniversaries.length > 0
+        ) {
+          anniversariesHTML =
+            '<div class="person-anniversaries">' +
+            person.anniversaries.map(item => `
+              <div class="person-anniversary">
+                ${formatDate(item.date)}　
+                ${item.title}
+              </div>
+            `).join("") +
+            "</div>";
+        }
 
         div.innerHTML = `
           <div class="person-row">
@@ -302,12 +426,13 @@
             </div>
 
           </div>
+
+          ${anniversariesHTML}
         `;
 
         personList.appendChild(div);
       });
     }
-
 
     saveButton.addEventListener(
       "click",
@@ -325,90 +450,75 @@
         const file =
           photoInput.files[0];
 
-
         if (!name) {
-
-          alert(
-            "名前を入力してください。"
-          );
-
+          alert("名前を入力してください。");
           return;
         }
-
 
         const savePerson =
           (photoData = "") => {
 
             const person = {
-              name: name,
-              displayName: displayName,
-              prayer: prayer,
-              photo: photoData
+              name,
+              displayName,
+              prayer,
+              photo: photoData,
+              anniversaries: [
+                ...currentAnniversaries
+              ]
             };
 
-
             people.push(person);
-
 
             localStorage.setItem(
               "oinorisanPeople",
               JSON.stringify(people)
             );
 
-
             nameInput.value = "";
             displayNameInput.value = "";
             prayerInput.value = "";
             photoInput.value = "";
 
+            anniversaryDateInput.value = "";
+            anniversaryTitleInput.value = "";
 
+            currentAnniversaries = [];
+
+            renderCurrentAnniversaries();
             renderPeople();
           };
 
-
         if (file) {
-
           const reader =
             new FileReader();
 
-
           reader.onload = () => {
-
             savePerson(
               reader.result
             );
-
           };
-
 
           reader.readAsDataURL(file);
 
         } else {
-
           savePerson();
-
         }
-
       }
     );
 
-
+    renderCurrentAnniversaries();
     renderPeople();
 
-
     if ("serviceWorker" in navigator) {
-
       window.addEventListener(
         "load",
         () => {
-
           navigator.serviceWorker.register(
             "./service-worker.js"
           );
-
         }
       );
-
     }
   </script>
 
