@@ -10,5 +10,13 @@
 <body>
   <h1>おいのりさん™</h1>
   <p>大切な人に、祈りを捧げる。</p>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js");
+      });
+    }
+  </script>
 </body>
 </html>
