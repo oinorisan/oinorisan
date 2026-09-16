@@ -1,4 +1,4 @@
-const CACHE_NAME = "oinorisan-dev-v1";
+const CACHE_NAME = "oinorisan-dev-v2";
 
 const STATIC_FILES = [
   "./",
