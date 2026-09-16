@@ -1,4 +1,4 @@
-const CACHE_NAME = "oinorisan-v1";
+const CACHE_NAME = "oinorisan-v2";
 
 const FILES_TO_CACHE = [
   "./",
