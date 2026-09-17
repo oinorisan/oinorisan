@@ -2,29 +2,41 @@
 <html lang="ja">
 
 <head>
+
   <meta charset="utf-8">
 
   <!-- =========================================================
-       スマホ表示設定
+       スマートフォン表示
+       =========================================================
+
+       width=device-width
+         → iPhoneなどの画面幅に合わせる
+
+       initial-scale=1
+         → 最初の表示倍率を100%にする
        ========================================================= -->
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1"
   >
 
+
   <!-- =========================================================
        PWA
        ========================================================= -->
+
+  <!-- PWA設定ファイル -->
   <link
     rel="manifest"
     href="manifest.webmanifest"
   >
 
-  <!-- iPhone ホーム画面用アイコン -->
+  <!-- iPhoneのホーム画面に追加したときのアイコン -->
   <link
     rel="apple-touch-icon"
     href="icons/icon-192.png"
   >
+
 
   <title>おいのりさん™</title>
 
@@ -33,16 +45,29 @@
 
     /* =========================================================
        基本色
+       =========================================================
+
+       後から「テーマ」を作る場合、
+       このあたりを切り替えることで
+       色違いのデザインを作りやすくする。
        ========================================================= */
 
     :root {
+
       --bg: #faf8f5;
+
       --card: #ffffff;
+
       --text: #333333;
+
       --subtext: #777777;
+
       --border: #eeeeee;
+
       --soft: #f5f3f0;
+
       --button: #555555;
+
     }
 
 
@@ -50,7 +75,15 @@
        ページ全体
        ========================================================= */
 
+    * {
+      box-sizing: border-box;
+    }
+
+
     body {
+
+      margin: 0;
+
       font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -58,49 +91,104 @@
         "Yu Gothic",
         sans-serif;
 
-      margin: 0;
       background: var(--bg);
+
       color: var(--text);
+
     }
 
+
+    /* =========================================================
+       ヘッダー
+       ========================================================= */
 
     header {
-      padding: 28px 20px 14px;
+
+      padding:
+        28px
+        20px
+        14px;
+
       text-align: center;
+
     }
 
 
-    h1 {
-      margin: 0 0 6px;
-      font-size: 28px;
+    /*
+      トップページのロゴ。
+
+      現在はPWAアイコンと同じ
+      icons/icon-192.png
+      を使用している。
+    */
+
+    .top-logo {
+
+      display: block;
+
+      width: 150px;
+      height: 150px;
+
+      margin:
+        0
+        auto
+        18px;
+
+      object-fit: contain;
+
     }
 
+
+    /*
+      メインコピー
+    */
+
+    .tagline {
+
+      color: var(--subtext);
+
+      font-size: 14px;
+
+    }
+
+
+    /* =========================================================
+       メイン領域
+       ========================================================= */
+
+    main {
+
+      max-width: 640px;
+
+      margin: 0 auto;
+
+      padding: 20px;
+
+    }
+
+
+    /* =========================================================
+       見出し
+       ========================================================= */
 
     h2 {
+
       margin-top: 0;
+
       font-size: 20px;
+
     }
 
 
     h3 {
+
       margin-top: 24px;
+
       margin-bottom: 8px;
+
       font-size: 16px;
+
     }
-
-
-    .tagline {
-      color: var(--subtext);
-      font-size: 14px;
-    }
-
-
-    main {
-      max-width: 640px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
 
 
     /* =========================================================
@@ -108,25 +196,31 @@
        ========================================================= */
 
     #mainApp {
-      display: block;
-    }
 
+      display: block;
+
+    }
 
 
     /* =========================================================
-       カード
+       共通カード
        ========================================================= */
 
     .card {
-      background: var(--card);
-      border-radius: 16px;
-      padding: 20px;
+
       margin-bottom: 20px;
 
-      box-shadow:
-        0 2px 10px rgba(0, 0, 0, 0.06);
-    }
+      padding: 20px;
 
+      background: var(--card);
+
+      border-radius: 16px;
+
+      box-shadow:
+        0 2px 10px
+        rgba(0, 0, 0, 0.06);
+
+    }
 
 
     /* =========================================================
@@ -134,56 +228,95 @@
        ========================================================= */
 
     .today-card {
-      border: 1px solid #ece7df;
+
+      border:
+        1px solid
+        #ece7df;
+
     }
 
 
     .today-empty {
+
+      margin-bottom: 0;
+
       color: #888;
+
       font-size: 14px;
+
       line-height: 1.7;
+
     }
 
 
     .today-item {
-      padding: 14px 0;
-      border-bottom: 1px solid var(--border);
+
+      padding:
+        14px
+        0;
+
+      border-bottom:
+        1px solid
+        var(--border);
+
     }
 
 
     .today-item:last-child {
+
       border-bottom: none;
+
     }
 
 
     .today-person {
+
       font-size: 18px;
+
       font-weight: bold;
+
     }
 
 
     .today-message {
+
       margin-top: 4px;
+
       color: #555;
+
       line-height: 1.6;
+
     }
 
 
     .today-prayer {
+
       margin-top: 4px;
+
       color: #888;
+
       font-size: 13px;
+
+      line-height: 1.6;
+
     }
 
 
     .pray-button {
-      width: auto;
-      margin-top: 10px;
-      padding: 9px 14px;
-      background: #666;
-      font-size: 14px;
-    }
 
+      width: auto;
+
+      margin-top: 10px;
+
+      padding:
+        9px
+        14px;
+
+      background: #666;
+
+      font-size: 14px;
+
+    }
 
 
     /* =========================================================
@@ -191,209 +324,274 @@
        ========================================================= */
 
     .upcoming-item {
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
+
+      padding:
+        12px
+        0;
+
+      border-bottom:
+        1px solid
+        var(--border);
+
     }
 
 
     .upcoming-item:last-child {
+
       border-bottom: none;
+
     }
 
 
     .upcoming-date {
+
       font-size: 14px;
+
       font-weight: bold;
+
     }
 
 
     .upcoming-person {
+
       margin-top: 3px;
+
       font-size: 16px;
+
     }
 
 
     .upcoming-title {
+
       margin-top: 2px;
+
       color: #666;
+
       font-size: 14px;
+
     }
 
 
     .upcoming-days {
+
       margin-top: 3px;
+
       color: #999;
+
       font-size: 12px;
-    }
 
+    }
 
 
     /* =========================================================
-       入力フォーム
+       大切な人リスト
+       第1段階アコーディオン
+       =========================================================
+
+       details / summary を使用する。
+
+       JavaScriptだけで開閉を作るのではなく、
+       HTML標準機能を使うことで、
+
+       ・スマホでも扱いやすい
+       ・アクセシビリティ上も比較的安全
+       ・JavaScriptが多少変わっても開閉できる
+
+       というメリットがある。
        ========================================================= */
 
-    label {
-      display: block;
-      margin-top: 14px;
-      font-size: 14px;
-      font-weight: 600;
+    .people-list-card {
+
+      padding: 0;
+
+      overflow: hidden;
+
     }
 
 
-    input,
-    textarea,
-    select {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 12px;
-      margin-top: 6px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      font-size: 16px;
-      background: #fff;
-    }
+    /*
+      details本体
+    */
 
+    .people-accordion {
 
-    textarea {
-      resize: vertical;
-    }
-
-
-
-    /* =========================================================
-       ボタン
-       ========================================================= */
-
-    button {
-      width: 100%;
-      margin-top: 18px;
-      padding: 14px;
-      border: none;
-      border-radius: 12px;
-      background: var(--button);
-      color: #fff;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-
-    button:active {
-      opacity: 0.8;
-    }
-
-
-    .secondary-button {
-      background: #999;
-    }
-
-
-    .cancel-button {
-      display: none;
-      background: #bbb;
-      color: #333;
-    }
-
-
-
-    /* =========================================================
-       記念日
-       ========================================================= */
-
-    .anniversary-list {
-      margin-top: 12px;
-    }
-
-
-    .anniversary-item {
-      background: var(--soft);
-      border-radius: 10px;
-      padding: 10px 12px;
-      margin-top: 8px;
-      font-size: 14px;
-    }
-
-
-    .anniversary-text {
-      line-height: 1.6;
-    }
-
-
-    .anniversary-meta {
-      display: block;
-      margin-top: 2px;
-      color: #888;
-      font-size: 12px;
-    }
-
-
-    .anniversary-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-
-    .anniversary-edit,
-    .anniversary-remove {
-      width: auto;
       margin: 0;
-      padding: 6px 10px;
-      font-size: 12px;
-      border-radius: 7px;
+
     }
 
 
-    .anniversary-edit {
-      background: #d9d9d9;
-      color: #444;
+    /*
+      一番外側のsummary。
+
+      「大切な人リスト（3人）」
+      という部分。
+    */
+
+    .people-accordion-summary {
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      gap: 12px;
+
+      padding: 20px;
+
+      font-size: 20px;
+
+      font-weight: bold;
+
+      cursor: pointer;
+
+      list-style: none;
+
     }
 
 
-    .anniversary-remove {
-      background: #e8e8e8;
-      color: #666;
-    }
+    /*
+      Safariなどで表示される
+      標準三角マークを消す。
+    */
 
+    .people-accordion-summary::-webkit-details-marker {
 
-    .anniversary-editing-message {
       display: none;
-      margin-top: 12px;
-      padding: 9px 11px;
-      background: #f2efe9;
-      color: #666;
-      border-radius: 9px;
-      font-size: 13px;
+
     }
 
+
+    /*
+      右側に独自の開閉マークを出す。
+    */
+
+    .people-accordion-summary::after {
+
+      content: "＋";
+
+      color: #999;
+
+      font-size: 24px;
+
+      font-weight: normal;
+
+    }
+
+
+    /*
+      detailsが開いている場合は
+      ＋ → − に変える。
+    */
+
+    .people-accordion[open]
+    >
+    .people-accordion-summary::after {
+
+      content: "−";
+
+    }
+
+
+    /*
+      大切な人リスト本体
+    */
+
+    .people-list-body {
+
+      padding:
+        0
+        20px
+        20px;
+
+      border-top:
+        1px solid
+        var(--border);
+
+    }
 
 
     /* =========================================================
-       登録済み人物
+       一人ひとり
+       第2段階アコーディオン
        ========================================================= */
 
-    .person {
-      padding: 18px 0;
-      border-bottom: 1px solid var(--border);
+    .person-details {
+
+      border-bottom:
+        1px solid
+        var(--border);
+
     }
 
 
-    .person:last-child {
+    .person-details:last-child {
+
       border-bottom: none;
+
     }
 
 
-    .person-row {
+    /*
+      各人物の閉じた状態。
+
+      写真
+      表示名
+      記念日○件
+      を表示。
+    */
+
+    .person-summary {
+
       display: flex;
+
       align-items: center;
-      gap: 14px;
+
+      gap: 12px;
+
+      padding:
+        16px
+        0;
+
+      cursor: pointer;
+
+      list-style: none;
+
     }
 
 
-    .person-info {
-      min-width: 0;
-      flex: 1;
+    .person-summary::-webkit-details-marker {
+
+      display: none;
+
     }
 
+
+    /*
+      写真と文字以外の余白を使って
+      右端に＋を置く。
+    */
+
+    .person-summary::after {
+
+      content: "＋";
+
+      margin-left: auto;
+
+      color: #aaa;
+
+      font-size: 22px;
+
+    }
+
+
+    .person-details[open]
+    >
+    .person-summary::after {
+
+      content: "−";
+
+    }
 
 
     /* =========================================================
@@ -401,136 +599,494 @@
        ========================================================= */
 
     .profile-photo {
-      width: 64px;
-      height: 64px;
+
+      width: 56px;
+      height: 56px;
+
       border-radius: 50%;
+
       object-fit: cover;
+
       flex-shrink: 0;
+
     }
 
+
+    /*
+      写真が登録されていない場合。
+    */
 
     .profile-photo.placeholder {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #eee;
-      color: #777;
-      font-size: 20px;
-    }
 
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      background: #eee;
+
+      color: #777;
+
+      font-size: 18px;
+
+    }
 
 
     /* =========================================================
-       人物情報
+       人物概要
        ========================================================= */
 
+    .person-summary-info {
+
+      min-width: 0;
+
+      flex: 1;
+
+    }
+
+
     .display-name {
-      font-size: 18px;
+
+      font-size: 17px;
+
       font-weight: bold;
+
+    }
+
+
+    /*
+      「記念日 3件」
+    */
+
+    .person-count {
+
+      margin-top: 3px;
+
+      color: #999;
+
+      font-size: 12px;
+
+    }
+
+
+    /* =========================================================
+       人物を開いた状態
+       ========================================================= */
+
+    .person-content {
+
+      padding:
+        0
+        0
+        18px
+        68px;
+
     }
 
 
     .real-name {
-      margin-top: 2px;
+
       color: #777;
+
       font-size: 14px;
+
     }
 
 
     .prayer {
-      margin-top: 6px;
+
+      margin-top: 8px;
+
       color: #555;
-      line-height: 1.6;
+
+      font-size: 14px;
+
+      line-height: 1.7;
+
     }
 
 
+    /*
+      「記念日」という小見出し。
+    */
+
+    .person-anniversary-heading {
+
+      margin-top: 16px;
+
+      color: #555;
+
+      font-size: 13px;
+
+      font-weight: bold;
+
+    }
+
 
     /* =========================================================
-       登録済み人物の記念日
+       人物の記念日
        ========================================================= */
 
     .person-anniversaries {
-      margin-top: 12px;
-      padding-left: 78px;
+
+      margin-top: 8px;
+
     }
 
 
     .person-anniversary {
-      margin-top: 8px;
-      color: #666;
+
+      padding:
+        9px
+        10px;
+
+      margin-top: 7px;
+
+      background: var(--soft);
+
+      border-radius: 9px;
+
+      color: #555;
+
       font-size: 14px;
+
       line-height: 1.5;
+
     }
 
 
     .person-anniversary-meta {
+
       display: block;
+
+      margin-top: 2px;
+
       color: #999;
-      font-size: 12px;
+
+      font-size: 11px;
+
     }
 
 
+    .person-no-anniversary {
+
+      margin-top: 8px;
+
+      color: #999;
+
+      font-size: 13px;
+
+    }
+
 
     /* =========================================================
-       人物の編集・削除
+       人物 編集・削除
        ========================================================= */
 
     .person-actions {
+
       display: flex;
+
       gap: 8px;
-      padding-left: 78px;
-      margin-top: 10px;
+
+      margin-top: 14px;
+
     }
 
 
     .edit-button,
     .delete-button {
+
       width: auto;
-      margin-top: 0;
-      padding: 8px 14px;
+
+      margin: 0;
+
+      padding:
+        8px
+        14px;
+
       font-size: 13px;
+
       border-radius: 8px;
+
     }
 
 
     .edit-button {
+
       background: #ddd;
+
       color: #444;
+
     }
 
 
     .delete-button {
-      background: #eee;
-      color: #666;
-    }
 
+      background: #eee;
+
+      color: #666;
+
+    }
 
 
     /* =========================================================
-       その他
+       フォーム
        ========================================================= */
 
-    .empty {
-      color: #888;
+    label {
+
+      display: block;
+
+      margin-top: 14px;
+
       font-size: 14px;
+
+      font-weight: 600;
+
     }
 
+
+    input,
+    textarea,
+    select {
+
+      width: 100%;
+
+      margin-top: 6px;
+
+      padding: 12px;
+
+      border:
+        1px solid
+        #ccc;
+
+      border-radius: 10px;
+
+      background: #fff;
+
+      font-size: 16px;
+
+    }
+
+
+    textarea {
+
+      resize: vertical;
+
+    }
+
+
+    /* =========================================================
+       ボタン
+       ========================================================= */
+
+    button {
+
+      width: 100%;
+
+      margin-top: 18px;
+
+      padding: 14px;
+
+      border: none;
+
+      border-radius: 12px;
+
+      background: var(--button);
+
+      color: #fff;
+
+      font-size: 16px;
+
+      cursor: pointer;
+
+    }
+
+
+    button:active {
+
+      opacity: 0.8;
+
+    }
+
+
+    .secondary-button {
+
+      background: #999;
+
+    }
+
+
+    .cancel-button {
+
+      display: none;
+
+      background: #bbb;
+
+      color: #333;
+
+    }
+
+
+    /* =========================================================
+       登録フォーム内の記念日
+       ========================================================= */
+
+    .anniversary-list {
+
+      margin-top: 12px;
+
+    }
+
+
+    .anniversary-item {
+
+      margin-top: 8px;
+
+      padding:
+        10px
+        12px;
+
+      background: var(--soft);
+
+      border-radius: 10px;
+
+      font-size: 14px;
+
+    }
+
+
+    .anniversary-text {
+
+      line-height: 1.6;
+
+    }
+
+
+    .anniversary-meta {
+
+      display: block;
+
+      margin-top: 2px;
+
+      color: #888;
+
+      font-size: 12px;
+
+    }
+
+
+    .anniversary-actions {
+
+      display: flex;
+
+      gap: 8px;
+
+      margin-top: 8px;
+
+    }
+
+
+    .anniversary-edit,
+    .anniversary-remove {
+
+      width: auto;
+
+      margin: 0;
+
+      padding:
+        6px
+        10px;
+
+      border-radius: 7px;
+
+      font-size: 12px;
+
+    }
+
+
+    .anniversary-edit {
+
+      background: #d9d9d9;
+
+      color: #444;
+
+    }
+
+
+    .anniversary-remove {
+
+      background: #e8e8e8;
+
+      color: #666;
+
+    }
+
+
+    .anniversary-editing-message {
+
+      display: none;
+
+      margin-top: 12px;
+
+      padding:
+        9px
+        11px;
+
+      background: #f2efe9;
+
+      border-radius: 9px;
+
+      color: #666;
+
+      font-size: 13px;
+
+    }
+
+
+    /* =========================================================
+       人物編集時メッセージ
+       ========================================================= */
 
     .editing-message {
+
       display: none;
+
       margin-bottom: 14px;
-      padding: 10px 12px;
-      border-radius: 10px;
+
+      padding:
+        10px
+        12px;
+
       background: #f2efe9;
+
+      border-radius: 10px;
+
       color: #666;
+
       font-size: 14px;
+
     }
 
+
+    /* 月日だけ入力する欄は最初は非表示 */
 
     #monthDayArea {
+
       display: none;
+
     }
 
+
+    .empty {
+
+      color: #888;
+
+      font-size: 14px;
+
+    }
 
 
     /* =========================================================
@@ -538,158 +1094,197 @@
        ========================================================= */
 
     #prayerScreen {
+
       display: none;
 
       min-height: 100vh;
-      box-sizing: border-box;
 
-      padding: 40px 24px 32px;
+      padding:
+        40px
+        24px
+        32px;
 
       background: #f8f5f0;
 
       text-align: center;
+
     }
 
 
     .prayer-screen-inner {
+
       max-width: 520px;
+
       margin: 0 auto;
+
     }
 
 
     .prayer-screen-logo {
+
       color: #888;
+
       font-size: 14px;
+
       letter-spacing: 0.08em;
+
     }
 
 
     .prayer-screen-name {
+
       margin-top: 42px;
+
       font-size: 30px;
+
       font-weight: bold;
+
     }
 
 
     .prayer-screen-anniversary {
+
       margin-top: 8px;
+
       color: #888;
+
       font-size: 14px;
+
     }
 
 
     .prayer-screen-text {
+
       margin-top: 32px;
+
       font-size: 20px;
+
       line-height: 1.8;
+
     }
 
 
     .prayer-timer {
+
       margin-top: 48px;
+
       font-size: 72px;
+
       font-weight: 300;
+
       line-height: 1;
+
     }
 
 
     .prayer-timer-label {
+
       margin-top: 8px;
+
       color: #999;
+
       font-size: 13px;
+
     }
 
 
     .prayer-guide {
+
       margin-top: 40px;
+
       color: #777;
+
       font-size: 16px;
+
       line-height: 1.8;
+
     }
 
 
     .prayer-complete {
+
       display: none;
+
       margin-top: 36px;
+
       font-size: 20px;
+
       line-height: 1.8;
+
     }
 
 
     .end-prayer-button {
+
       margin-top: 50px;
+
       background: #666;
+
     }
 
 
-
     /* =========================================================
-       スマホ
+       スマートフォン
        ========================================================= */
 
-    @media (
-      max-width: 480px
-    ) {
+    @media (max-width: 480px) {
 
-      .person-anniversaries,
-      .person-actions {
+      /*
+        スマホでは人物詳細の左余白を
+        少し小さくする。
+      */
+
+      .person-content {
+
         padding-left: 0;
+
       }
 
 
       .prayer-screen-name {
+
         font-size: 26px;
+
       }
 
 
       .prayer-screen-text {
+
         font-size: 18px;
+
       }
 
 
       .prayer-timer {
+
         font-size: 64px;
+
       }
 
     }
-
-.top-logo {
-  display: block;
-  width: 150px;
-  height: 150px;
-  margin: 0 auto 18px;
-  object-fit: contain;
-}
-
-.tagline {
-  color: var(--subtext);
-  font-size: 14px;
-}
 
   </style>
 
 </head>
 
 
-
 <body>
 
 
   <!-- =======================================================
-       音声
+       おいのりテーマ曲
+       =======================================================
+
+       controlsを付けないため、
+       通常画面には音声プレイヤーは表示されない。
+
+       loop
+         → 25秒を超えて祈る仕様などに変更した場合でも
+           曲を繰り返せる。
+
+       現在のおいのり時間は25秒。
        ======================================================= -->
 
-  <!--
-    おいのりテーマ曲。
-
-    audio/oinorisan.mp3 を読み込みます。
-
-    loop
-      → 25秒の曲を自動で繰り返します。
-
-    controls は付けていないため、
-    通常の音声プレイヤーUIは表示されません。
-  -->
   <audio
     id="prayerAudio"
     src="audio/oinorisan.mp3"
@@ -698,26 +1293,30 @@
   ></audio>
 
 
-
   <!-- =======================================================
        通常画面
        ======================================================= -->
 
   <div id="mainApp">
 
-<header>
 
-  <img
-    src="icons/icon-192.png"
-    alt="おいのりさん™"
-    class="top-logo"
-  >
+    <!-- =====================================================
+         ヘッダー
+         ===================================================== -->
 
-  <div class="tagline">
-    大切な人に、祈りを捧げる。
-  </div>
+    <header>
 
-</header>
+      <img
+        src="icons/icon-192.png"
+        alt="おいのりさん™"
+        class="top-logo"
+      >
+
+      <div class="tagline">
+        大切な人に、祈りを捧げる。
+      </div>
+
+    </header>
 
 
     <main>
@@ -727,9 +1326,7 @@
            今日のおいのり
            =================================================== -->
 
-      <section
-        class="card today-card"
-      >
+      <section class="card today-card">
 
         <h2>
           今日のおいのり
@@ -738,7 +1335,6 @@
         <div id="todayPrayerList"></div>
 
       </section>
-
 
 
       <!-- ===================================================
@@ -756,9 +1352,52 @@
       </section>
 
 
+      <!-- ===================================================
+           大切な人リスト
+           ===================================================
+
+           第1段階：
+             「大切な人リスト」を開く
+
+           第2段階：
+             一人ひとりを開く
+
+           通常時は閉じている。
+           =================================================== -->
+
+      <section class="card people-list-card">
+
+        <details
+          id="peopleAccordion"
+          class="people-accordion"
+        >
+
+          <!--
+            人数部分はJavaScriptで更新する。
+          -->
+          <summary
+            id="peopleAccordionSummary"
+            class="people-accordion-summary"
+          >
+            大切な人リスト
+          </summary>
+
+
+          <!--
+            JavaScriptで人物一覧をここに作る。
+          -->
+          <div
+            id="personList"
+            class="people-list-body"
+          ></div>
+
+        </details>
+
+      </section>
+
 
       <!-- ===================================================
-           人物登録・編集
+           大切な人 登録・編集
            =================================================== -->
 
       <section
@@ -771,15 +1410,21 @@
         </h2>
 
 
+        <!-- 人物編集中のみ表示 -->
         <div
           id="editingMessage"
           class="editing-message"
         >
-          編集中です
+          大切な人を編集中です
         </div>
 
 
+        <!-- =================================================
+             名前
+             ================================================= -->
+
         <label>
+
           名前
 
           <input
@@ -787,10 +1432,22 @@
             type="text"
             placeholder="例：山田 花子"
           >
+
         </label>
 
 
+        <!-- =================================================
+             表示名
+             =================================================
+
+             「母」
+             「お母さん」
+             「○○ちゃん」
+             などアプリ上で表示する呼び名。
+             ================================================= -->
+
         <label>
+
           表示名
 
           <input
@@ -798,10 +1455,16 @@
             type="text"
             placeholder="例：お母さん"
           >
+
         </label>
 
 
+        <!-- =================================================
+             プロフィール写真
+             ================================================= -->
+
         <label>
+
           写真
 
           <input
@@ -809,10 +1472,16 @@
             type="file"
             accept="image/*"
           >
+
         </label>
 
 
+        <!-- =================================================
+             祈り
+             ================================================= -->
+
         <label>
+
           祈り
 
           <textarea
@@ -820,8 +1489,8 @@
             rows="3"
             placeholder="例：いつまでも元気でありますように"
           ></textarea>
-        </label>
 
+        </label>
 
 
         <!-- =================================================
@@ -841,7 +1510,12 @@
         </div>
 
 
+        <!-- =================================================
+             年月日 or 月日
+             ================================================= -->
+
         <label>
+
           日付の種類
 
           <select id="anniversaryMode">
@@ -855,28 +1529,34 @@
             </option>
 
           </select>
+
         </label>
 
 
+        <!-- 年月日 -->
 
         <div id="fullDateArea">
 
           <label>
+
             年月日
 
             <input
               id="anniversaryDate"
               type="date"
             >
+
           </label>
 
         </div>
 
 
+        <!-- 月日だけ -->
 
         <div id="monthDayArea">
 
           <label>
+
             月
 
             <input
@@ -886,10 +1566,12 @@
               max="12"
               placeholder="例：4"
             >
+
           </label>
 
 
           <label>
+
             日
 
             <input
@@ -899,13 +1581,18 @@
               max="31"
               placeholder="例：9"
             >
+
           </label>
 
         </div>
 
 
+        <!-- =================================================
+             記念日の名前
+             ================================================= -->
 
         <label>
+
           なんの日？
 
           <input
@@ -913,11 +1600,16 @@
             type="text"
             placeholder="例：誕生日"
           >
+
         </label>
 
 
+        <!-- =================================================
+             繰り返し
+             ================================================= -->
 
         <label>
+
           くり返し
 
           <select id="anniversaryRepeat">
@@ -931,11 +1623,20 @@
             </option>
 
           </select>
+
         </label>
 
 
+        <!-- =================================================
+             通知
+             =================================================
+
+             現段階では通知設定値を保存するところまで。
+             PWA Push通知は今後実装可能。
+             ================================================= -->
 
         <label>
+
           通知
 
           <select id="anniversaryNotification">
@@ -961,8 +1662,8 @@
             </option>
 
           </select>
-        </label>
 
+        </label>
 
 
         <button
@@ -983,12 +1684,19 @@
         </button>
 
 
+        <!--
+          入力中の記念日一覧。
+        -->
+
         <div
           id="anniversaryList"
           class="anniversary-list"
         ></div>
 
 
+        <!-- =================================================
+             人物登録
+             ================================================= -->
 
         <button
           id="saveButton"
@@ -1009,25 +1717,9 @@
       </section>
 
 
-
-      <!-- ===================================================
-           人物一覧
-           =================================================== -->
-
-      <section class="card">
-
-        <h2>
-          おいのりする人
-        </h2>
-
-        <div id="personList"></div>
-
-      </section>
-
     </main>
 
   </div>
-
 
 
   <!-- =======================================================
@@ -1105,11 +1797,10 @@
   </section>
 
 
-
   <script>
 
     /* =======================================================
-       音声
+       基本DOM
        ======================================================= */
 
     const prayerAudio =
@@ -1117,11 +1808,6 @@
         "prayerAudio"
       );
 
-
-
-    /* =======================================================
-       画面
-       ======================================================= */
 
     const mainApp =
       document.getElementById(
@@ -1177,7 +1863,6 @@
       );
 
 
-
     /* =======================================================
        人物入力
        ======================================================= */
@@ -1204,7 +1889,6 @@
       document.getElementById(
         "prayer"
       );
-
 
 
     /* =======================================================
@@ -1289,6 +1973,21 @@
       );
 
 
+    /* =======================================================
+       人物一覧
+       ======================================================= */
+
+    const personList =
+      document.getElementById(
+        "personList"
+      );
+
+
+    const peopleAccordionSummary =
+      document.getElementById(
+        "peopleAccordionSummary"
+      );
+
 
     /* =======================================================
        人物保存・編集
@@ -1312,17 +2011,10 @@
       );
 
 
-    const personList =
-      document.getElementById(
-        "personList"
-      );
-
-
     const formCard =
       document.getElementById(
         "formCard"
       );
-
 
 
     /* =======================================================
@@ -1341,9 +2033,14 @@
       );
 
 
-
     /* =======================================================
        保存データ
+       =======================================================
+
+       現在はブラウザ内の localStorage に保存。
+
+       将来クラウド同期するときは、
+       この部分をデータベース接続に置き換えることができる。
        ======================================================= */
 
     let people =
@@ -1354,21 +2051,41 @@
       ) || [];
 
 
-    let currentAnniversaries =
-      [];
+    /*
+      現在入力フォームで編集中の記念日。
+    */
+
+    let currentAnniversaries = [];
 
 
-    let editingIndex =
-      null;
+    /*
+      人物編集中の場合の配列番号。
+
+      null
+        → 新規登録
+
+      数字
+        → 既存人物の編集
+    */
+
+    let editingIndex = null;
 
 
-    let editingPhoto =
-      "";
+    /*
+      人物を編集した際、
+      新しい写真を選ばなかった場合に
+      既存写真を残すために使用。
+    */
 
+    let editingPhoto = "";
+
+
+    /*
+      記念日編集中の配列番号。
+    */
 
     let editingAnniversaryIndex =
       null;
-
 
 
     /* =======================================================
@@ -1379,30 +2096,55 @@
       null;
 
 
-    let prayerSecondsRemaining =
-     25;
+    /*
+      現在のおいのり時間は25秒。
+    */
 
+    let prayerSecondsRemaining =
+      25;
 
 
     /* =======================================================
-       HTML特殊文字
+       HTML特殊文字のエスケープ
+       =======================================================
+
+       入力された文字列に
+       < > " などが含まれていても
+       HTMLとして実行されないようにする。
        ======================================================= */
 
-    function escapeHTML(
-      value
-    ) {
+    function escapeHTML(value) {
 
       return String(
         value || ""
       )
 
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
+        .replaceAll(
+          "&",
+          "&amp;"
+        )
 
+        .replaceAll(
+          "<",
+          "&lt;"
+        )
+
+        .replaceAll(
+          ">",
+          "&gt;"
+        )
+
+        .replaceAll(
+          '"',
+          "&quot;"
+        )
+
+        .replaceAll(
+          "'",
+          "&#039;"
+        );
+
+    }
 
 
     /* =======================================================
@@ -1414,7 +2156,9 @@
     ) {
 
       if (!dateString) {
+
         return "";
+
       }
 
 
@@ -1425,24 +2169,30 @@
       if (
         parts.length !== 3
       ) {
+
         return dateString;
+
       }
 
 
       return (
         `${Number(parts[0])}年${Number(parts[1])}月${Number(parts[2])}日`
       );
+
     }
 
 
-
     /* =======================================================
-       記念日表示
+       記念日の表示
        ======================================================= */
 
     function formatAnniversary(
       item
     ) {
+
+      /*
+        月日だけの場合。
+      */
 
       if (
         item.type ===
@@ -1452,18 +2202,23 @@
         return (
           `${item.month}月${item.day}日`
         );
+
       }
 
+
+      /*
+        年月日の場合。
+      */
 
       return formatDate(
         item.date
       );
+
     }
 
 
-
     /* =======================================================
-       通知
+       通知設定の表示
        ======================================================= */
 
     function formatNotification(
@@ -1479,38 +2234,46 @@
       if (
         notification === "0"
       ) {
+
         return "当日に通知";
+
       }
 
 
       if (
         notification === "1"
       ) {
+
         return "1日前に通知";
+
       }
 
 
       if (
         notification === "3"
       ) {
+
         return "3日前に通知";
+
       }
 
 
       if (
         notification === "7"
       ) {
+
         return "7日前に通知";
+
       }
 
 
       return "通知しない";
+
     }
 
 
-
     /* =======================================================
-       繰り返し
+       繰り返し設定の表示
        ======================================================= */
 
     function formatRepeat(
@@ -1522,8 +2285,8 @@
           ? "その日だけ"
           : "毎年"
       );
-    }
 
+    }
 
 
     /* =======================================================
@@ -1533,17 +2296,31 @@
     function savePeople() {
 
       localStorage.setItem(
+
         "oinorisanPeople",
+
         JSON.stringify(
           people
         )
-      );
-    }
 
+      );
+
+    }
 
 
     /* =======================================================
        古いデータの補完
+       =======================================================
+
+       アプリ開発途中で登録された古いデータには、
+
+       repeat
+       notification
+
+       が存在しない可能性がある。
+
+       その場合でもエラーにならないよう、
+       初期値を補う。
        ======================================================= */
 
     function normalizePeople() {
@@ -1557,6 +2334,7 @@
               ...person,
 
               anniversaries:
+
                 Array.isArray(
                   person.anniversaries
                 )
@@ -1588,12 +2366,12 @@
 
 
       savePeople();
+
     }
 
 
-
     /* =======================================================
-       日付入力切替
+       日付入力方式の切り替え
        ======================================================= */
 
     anniversaryMode.addEventListener(
@@ -1610,7 +2388,6 @@
           fullDateArea.style.display =
             "block";
 
-
           monthDayArea.style.display =
             "none";
 
@@ -1619,19 +2396,18 @@
           fullDateArea.style.display =
             "none";
 
-
           monthDayArea.style.display =
             "block";
 
         }
 
       }
+
     );
 
 
-
     /* =======================================================
-       記念日フォームリセット
+       記念日フォームのリセット
        ======================================================= */
 
     function resetAnniversaryForm() {
@@ -1680,18 +2456,22 @@
         "記念日を追加";
 
 
-      anniversaryEditingMessage.style.display =
-        "none";
+      anniversaryEditingMessage
+        .style
+        .display =
+          "none";
 
 
-      cancelAnniversaryEditButton.style.display =
-        "none";
+      cancelAnniversaryEditButton
+        .style
+        .display =
+          "none";
+
     }
 
 
-
     /* =======================================================
-       入力中記念日表示
+       入力フォーム内の記念日一覧
        ======================================================= */
 
     function renderCurrentAnniversaries() {
@@ -1717,35 +2497,45 @@
 
           div.innerHTML =
             `
+
               <div class="anniversary-text">
 
                 <div>
+
                   ${escapeHTML(
                     formatAnniversary(
                       item
                     )
                   )}
+
                   　
+
                   ${escapeHTML(
                     item.title
                   )}
+
                 </div>
 
                 <span class="anniversary-meta">
+
                   ${escapeHTML(
                     formatRepeat(
                       item.repeat
                     )
                   )}
+
                   ／
+
                   ${escapeHTML(
                     formatNotification(
                       item.notification
                     )
                   )}
+
                 </span>
 
               </div>
+
 
               <div class="anniversary-actions">
 
@@ -1764,150 +2554,147 @@
                 </button>
 
               </div>
+
             `;
 
 
-
-          /* -------------------------------------------------
+          /* ---------------------------------------------------
              記念日編集
-             ------------------------------------------------- */
+             --------------------------------------------------- */
 
-          const editButton =
-            div.querySelector(
+          div
+            .querySelector(
               ".anniversary-edit"
-            );
+            )
+            .addEventListener(
+
+              "click",
+
+              () => {
+
+                editingAnniversaryIndex =
+                  index;
 
 
-          editButton.addEventListener(
+                anniversaryMode.value =
 
-            "click",
+                  item.type ===
+                  "monthday"
 
-            () => {
+                    ? "monthday"
 
-
-              editingAnniversaryIndex =
-                index;
-
-
-              anniversaryMode.value =
-                item.type ===
-                "monthday"
-                  ? "monthday"
-                  : "full";
+                    : "full";
 
 
-              if (
-                anniversaryMode.value ===
-                "monthday"
-              ) {
+                if (
+                  anniversaryMode.value ===
+                  "monthday"
+                ) {
 
-                fullDateArea.style.display =
-                  "none";
+                  fullDateArea.style.display =
+                    "none";
+
+                  monthDayArea.style.display =
+                    "block";
+
+                  anniversaryMonthInput.value =
+                    item.month || "";
+
+                  anniversaryDayInput.value =
+                    item.day || "";
+
+                  anniversaryDateInput.value =
+                    "";
+
+                } else {
+
+                  fullDateArea.style.display =
+                    "block";
+
+                  monthDayArea.style.display =
+                    "none";
+
+                  anniversaryDateInput.value =
+                    item.date || "";
+
+                }
 
 
-                monthDayArea.style.display =
-                  "block";
+                anniversaryTitleInput.value =
+                  item.title || "";
 
 
-                anniversaryMonthInput.value =
-                  item.month || "";
+                anniversaryRepeatInput.value =
+                  item.repeat || "yearly";
 
 
-                anniversaryDayInput.value =
-                  item.day || "";
+                anniversaryNotificationInput.value =
+                  String(
+                    item.notification
+                    ?? "none"
+                  );
 
 
-                anniversaryDateInput.value =
-                  "";
-
-              } else {
-
-                fullDateArea.style.display =
-                  "block";
+                addAnniversaryButton.textContent =
+                  "記念日を更新";
 
 
-                monthDayArea.style.display =
-                  "none";
+                anniversaryEditingMessage
+                  .style
+                  .display =
+                    "block";
 
 
-                anniversaryDateInput.value =
-                  item.date || "";
+                cancelAnniversaryEditButton
+                  .style
+                  .display =
+                    "block";
 
               }
 
-
-              anniversaryTitleInput.value =
-                item.title || "";
+            );
 
 
-              anniversaryRepeatInput.value =
-                item.repeat || "yearly";
-
-
-              anniversaryNotificationInput.value =
-                String(
-                  item.notification
-                  ?? "none"
-                );
-
-
-              addAnniversaryButton.textContent =
-                "記念日を更新";
-
-
-              anniversaryEditingMessage.style.display =
-                "block";
-
-
-              cancelAnniversaryEditButton.style.display =
-                "block";
-
-            }
-          );
-
-
-
-          /* -------------------------------------------------
+          /* ---------------------------------------------------
              記念日削除
-             ------------------------------------------------- */
+             --------------------------------------------------- */
 
-          const removeButton =
-            div.querySelector(
+          div
+            .querySelector(
               ".anniversary-remove"
-            );
+            )
+            .addEventListener(
+
+              "click",
+
+              () => {
+
+                const ok =
+                  confirm(
+                    `「${item.title}」を削除しますか？`
+                  );
 
 
-          removeButton.addEventListener(
+                if (!ok) {
 
-            "click",
+                  return;
 
-            () => {
+                }
 
 
-              const ok =
-                confirm(
-                  `「${item.title}」を削除しますか？`
+                currentAnniversaries.splice(
+                  index,
+                  1
                 );
 
 
-              if (!ok) {
-                return;
+                resetAnniversaryForm();
+
+                renderCurrentAnniversaries();
+
               }
 
-
-              currentAnniversaries.splice(
-                index,
-                1
-              );
-
-
-              resetAnniversaryForm();
-
-
-              renderCurrentAnniversaries();
-
-            }
-          );
+            );
 
 
           anniversaryList.appendChild(
@@ -1915,13 +2702,14 @@
           );
 
         }
+
       );
+
     }
 
 
-
     /* =======================================================
-       記念日追加 / 更新
+       記念日追加・更新
        ======================================================= */
 
     addAnniversaryButton.addEventListener(
@@ -1944,6 +2732,7 @@
           );
 
           return;
+
         }
 
 
@@ -1958,6 +2747,9 @@
         let anniversary;
 
 
+        /* -----------------------------------------------------
+           年月日
+           ----------------------------------------------------- */
 
         if (
           anniversaryMode.value ===
@@ -1975,13 +2767,13 @@
             );
 
             return;
+
           }
 
 
           anniversary = {
 
-            type:
-              "full",
+            type: "full",
 
             date,
 
@@ -1992,6 +2784,11 @@
             notification
 
           };
+
+
+        /* -----------------------------------------------------
+           月日だけ
+           ----------------------------------------------------- */
 
         } else {
 
@@ -2019,13 +2816,13 @@
             );
 
             return;
+
           }
 
 
           anniversary = {
 
-            type:
-              "monthday",
+            type: "monthday",
 
             month,
 
@@ -2042,6 +2839,9 @@
         }
 
 
+        /*
+          新規追加か、既存記念日の更新か。
+        */
 
         if (
           editingAnniversaryIndex ===
@@ -2056,40 +2856,41 @@
 
           currentAnniversaries[
             editingAnniversaryIndex
-          ] = anniversary;
+          ] =
+            anniversary;
 
         }
 
 
         resetAnniversaryForm();
 
-
         renderCurrentAnniversaries();
 
       }
-    );
 
+    );
 
 
     /* =======================================================
        記念日編集キャンセル
        ======================================================= */
 
-    cancelAnniversaryEditButton.addEventListener(
+    cancelAnniversaryEditButton
+      .addEventListener(
 
-      "click",
+        "click",
 
-      () => {
+        () => {
 
-        resetAnniversaryForm();
+          resetAnniversaryForm();
 
-      }
-    );
+        }
 
+      );
 
 
     /* =======================================================
-       次回記念日
+       次回の記念日を計算
        ======================================================= */
 
     function getNextOccurrence(
@@ -2097,13 +2898,25 @@
       today
     ) {
 
+      /*
+        今日の時刻部分を消した基準日。
+      */
+
       const base =
         new Date(
+
           today.getFullYear(),
+
           today.getMonth(),
+
           today.getDate()
+
         );
 
+
+      /* -------------------------------------------------------
+         月日だけ
+         ------------------------------------------------------- */
 
       if (
         item.type ===
@@ -2112,11 +2925,20 @@
 
         let candidate =
           new Date(
+
             base.getFullYear(),
+
             Number(item.month) - 1,
+
             Number(item.day)
+
           );
 
+
+        /*
+          今年分がすでに過ぎていたら、
+          来年の日付にする。
+        */
 
         if (
           candidate < base
@@ -2124,17 +2946,26 @@
 
           candidate =
             new Date(
+
               base.getFullYear() + 1,
+
               Number(item.month) - 1,
+
               Number(item.day)
+
             );
 
         }
 
 
         return candidate;
+
       }
 
+
+      /* -------------------------------------------------------
+         年月日
+         ------------------------------------------------------- */
 
       if (
         item.type ===
@@ -2142,8 +2973,11 @@
       ) {
 
         const parts =
+
           item.date
+
             ? item.date.split("-")
+
             : [];
 
 
@@ -2152,26 +2986,25 @@
         ) {
 
           return null;
+
         }
 
 
         const originalYear =
-          Number(
-            parts[0]
-          );
+          Number(parts[0]);
 
 
         const month =
-          Number(
-            parts[1]
-          );
+          Number(parts[1]);
 
 
         const day =
-          Number(
-            parts[2]
-          );
+          Number(parts[2]);
 
+
+        /*
+          毎年繰り返す記念日。
+        */
 
         if (
           item.repeat ===
@@ -2180,9 +3013,13 @@
 
           let candidate =
             new Date(
+
               base.getFullYear(),
+
               month - 1,
+
               day
+
             );
 
 
@@ -2192,34 +3029,47 @@
 
             candidate =
               new Date(
+
                 base.getFullYear() + 1,
+
                 month - 1,
+
                 day
+
               );
 
           }
 
 
           return candidate;
+
         }
 
 
+        /*
+          その日だけ。
+        */
+
         return new Date(
+
           originalYear,
+
           month - 1,
+
           day
+
         );
 
       }
 
 
       return null;
+
     }
 
 
-
     /* =======================================================
-       日数差
+       2つの日付の日数差
        ======================================================= */
 
     function differenceInDays(
@@ -2236,52 +3086,61 @@
 
       const from =
         new Date(
+
           fromDate.getFullYear(),
+
           fromDate.getMonth(),
+
           fromDate.getDate()
+
         );
 
 
       const to =
         new Date(
+
           toDate.getFullYear(),
+
           toDate.getMonth(),
+
           toDate.getDate()
+
         );
 
 
       return Math.round(
+
         (
           to.getTime() -
           from.getTime()
         )
+
         /
+
         oneDay
+
       );
+
     }
 
 
-
     /* =======================================================
-       音声停止用の共通関数
+       おいのり音声停止
        ======================================================= */
 
     function stopPrayerAudio() {
 
-      /*
-        pause()
-        → 音声を停止
-      */
       prayerAudio.pause();
 
-
       /*
-        次回は曲の頭から
+        次回のおいのりは
+        曲の最初から始める。
       */
+
       prayerAudio.currentTime =
         0;
-    }
 
+    }
 
 
     /* =======================================================
@@ -2294,8 +3153,9 @@
     ) {
 
       /*
-        古いタイマーがあれば停止
+        古いタイマーが残っていれば停止。
       */
+
       if (
         prayerTimerInterval
       ) {
@@ -2307,43 +3167,54 @@
       }
 
 
-      /*
-        念のため以前の音声も停止
-      */
       stopPrayerAudio();
 
 
       /*
-        60秒
+        25秒に戻す。
       */
+
       prayerSecondsRemaining =
         25;
 
 
       /*
-        名前
+        表示名。
+        表示名がなければ本名。
       */
+
       prayerScreenName.textContent =
+
         person.displayName
+
         ||
+
         person.name;
 
 
       /*
-        記念日
+        今日の記念日。
       */
+
       prayerScreenAnniversary.textContent =
+
         anniversary
+
           ? anniversary.title
+
           : "";
 
 
       /*
-        祈り
+        登録された祈り。
       */
+
       prayerScreenText.textContent =
+
         person.prayer
+
         ||
+
         "大切な想いを、静かに祈ります。";
 
 
@@ -2360,8 +3231,10 @@
 
 
       /*
-        画面切り替え
+        通常画面を消して
+        おいのり画面を表示。
       */
+
       mainApp.style.display =
         "none";
 
@@ -2371,27 +3244,24 @@
 
 
       window.scrollTo({
+
         top: 0,
+
         behavior: "auto"
+
       });
 
 
+      /* -------------------------------------------------------
+         テーマ曲再生
+         ------------------------------------------------------- */
 
-      /* -----------------------------------------------------
-         音声再生
-         ----------------------------------------------------- */
-
-      /*
-        play() は Promise を返します。
-
-        iPhone / Safari では、
-        ユーザーが押したボタンから直接始まる
-        再生なら許可されやすいです。
-      */
       prayerAudio
+
         .play()
 
         .catch(
+
           error => {
 
             console.log(
@@ -2400,19 +3270,18 @@
             );
 
           }
+
         );
 
 
-
-      /* -----------------------------------------------------
-         60秒カウントダウン
-         ----------------------------------------------------- */
+      /* -------------------------------------------------------
+         25秒カウントダウン
+         ------------------------------------------------------- */
 
       prayerTimerInterval =
         setInterval(
 
           () => {
-
 
             prayerSecondsRemaining--;
 
@@ -2423,13 +3292,10 @@
               );
 
 
-            /*
-              0秒で終了
-            */
             if (
-              prayerSecondsRemaining <= 0
+              prayerSecondsRemaining <=
+              0
             ) {
-
 
               clearInterval(
                 prayerTimerInterval
@@ -2444,23 +3310,13 @@
                 "0";
 
 
-              /*
-                60秒になったので
-                音声も止める
-              */
               stopPrayerAudio();
 
 
-              /*
-                通常案内を隠す
-              */
               prayerGuide.style.display =
                 "none";
 
 
-              /*
-                完了メッセージ
-              */
               prayerComplete.style.display =
                 "block";
 
@@ -2471,8 +3327,8 @@
           1000
 
         );
-    }
 
+    }
 
 
     /* =======================================================
@@ -2481,9 +3337,6 @@
 
     function endPrayerSession() {
 
-      /*
-        タイマー停止
-      */
       if (
         prayerTimerInterval
       ) {
@@ -2499,38 +3352,27 @@
       }
 
 
-      /*
-        音声停止
-      */
       stopPrayerAudio();
 
 
-      /*
-        おいのり画面を隠す
-      */
       prayerScreen.style.display =
         "none";
 
 
-      /*
-        通常画面へ
-      */
       mainApp.style.display =
         "block";
 
 
       window.scrollTo({
+
         top: 0,
+
         behavior: "smooth"
+
       });
 
     }
 
-
-
-    /* =======================================================
-       おいのり終了ボタン
-       ======================================================= */
 
     endPrayerButton.addEventListener(
 
@@ -2541,8 +3383,8 @@
         endPrayerSession();
 
       }
-    );
 
+    );
 
 
     /* =======================================================
@@ -2564,8 +3406,8 @@
 
 
       people.forEach(
-        person => {
 
+        person => {
 
           const anniversaries =
             person.anniversaries
@@ -2573,8 +3415,8 @@
 
 
           anniversaries.forEach(
-            item => {
 
+            item => {
 
               const occurrence =
                 getNextOccurrence(
@@ -2584,7 +3426,9 @@
 
 
               if (!occurrence) {
+
                 return;
+
               }
 
 
@@ -2600,18 +3444,28 @@
               ) {
 
                 results.push({
+
                   person,
-                  anniversary: item
+
+                  anniversary:
+                    item
+
                 });
 
               }
 
             }
+
           );
 
         }
+
       );
 
+
+      /*
+        今日の記念日がない場合。
+      */
 
       if (
         results.length === 0
@@ -2619,18 +3473,28 @@
 
         todayPrayerList.innerHTML =
           `
+
             <p class="today-empty">
+
               今日登録されている記念日はありません。
+
             </p>
+
           `;
 
+
         return;
+
       }
 
 
-      results.forEach(
-        result => {
+      /*
+        今日の記念日を表示。
+      */
 
+      results.forEach(
+
+        result => {
 
           const person =
             result.person;
@@ -2654,28 +3518,45 @@
             `
 
               <div class="today-person">
+
                 ${escapeHTML(
+
                   person.displayName
+
                   ||
+
                   person.name
+
                 )}
+
               </div>
 
+
               <div class="today-message">
+
                 今日は「${escapeHTML(item.title)}」です。
+
               </div>
+
 
               ${
                 person.prayer
+
                   ? `
+
                     <div class="today-prayer">
+
                       ${escapeHTML(
                         person.prayer
                       )}
+
                     </div>
+
                   `
+
                   : ""
               }
+
 
               <button
                 class="pray-button"
@@ -2687,25 +3568,24 @@
             `;
 
 
-          const prayButton =
-            div.querySelector(
+          div
+            .querySelector(
               ".pray-button"
+            )
+            .addEventListener(
+
+              "click",
+
+              () => {
+
+                startPrayerSession(
+                  person,
+                  item
+                );
+
+              }
+
             );
-
-
-          prayButton.addEventListener(
-
-            "click",
-
-            () => {
-
-              startPrayerSession(
-                person,
-                item
-              );
-
-            }
-          );
 
 
           todayPrayerList.appendChild(
@@ -2713,13 +3593,17 @@
           );
 
         }
-      );
-    }
 
+      );
+
+    }
 
 
     /* =======================================================
        もうすぐのおいのり
+       =======================================================
+
+       現在は30日以内を表示。
        ======================================================= */
 
     function renderUpcomingPrayers() {
@@ -2737,8 +3621,8 @@
 
 
       people.forEach(
-        person => {
 
+        person => {
 
           const anniversaries =
             person.anniversaries
@@ -2746,8 +3630,8 @@
 
 
           anniversaries.forEach(
-            item => {
 
+            item => {
 
               const occurrence =
                 getNextOccurrence(
@@ -2757,7 +3641,9 @@
 
 
               if (!occurrence) {
+
                 return;
+
               }
 
 
@@ -2767,6 +3653,12 @@
                   occurrence
                 );
 
+
+              /*
+                今日そのものは
+                「今日のおいのり」に出すため、
+                ここでは1〜30日後だけ。
+              */
 
               if (
                 diff > 0 &&
@@ -2789,16 +3681,25 @@
               }
 
             }
+
           );
 
         }
+
       );
 
 
+      /*
+        日付の近い順。
+      */
+
       results.sort(
+
         (a, b) =>
+
           a.occurrence -
           b.occurrence
+
       );
 
 
@@ -2808,18 +3709,24 @@
 
         upcomingPrayerList.innerHTML =
           `
+
             <p class="today-empty">
+
               30日以内の記念日はありません。
+
             </p>
+
           `;
 
+
         return;
+
       }
 
 
       results.forEach(
-        result => {
 
+        result => {
 
           const div =
             document.createElement(
@@ -2835,25 +3742,40 @@
             `
 
               <div class="upcoming-date">
+
                 ${result.occurrence.getMonth() + 1}月${result.occurrence.getDate()}日
+
               </div>
+
 
               <div class="upcoming-person">
+
                 ${escapeHTML(
+
                   result.person.displayName
+
                   ||
+
                   result.person.name
+
                 )}
+
               </div>
 
+
               <div class="upcoming-title">
+
                 ${escapeHTML(
                   result.anniversary.title
                 )}
+
               </div>
 
+
               <div class="upcoming-days">
+
                 あと${result.diff}日
+
               </div>
 
             `;
@@ -2864,20 +3786,55 @@
           );
 
         }
+
       );
+
     }
 
 
-
     /* =======================================================
-       人物一覧
+       大切な人リスト
+       =======================================================
+
+       今回の大きな変更部分。
+
+       第1段階
+         大切な人リスト
+
+       第2段階
+         一人ひとり
+
+       一人を開くと、
+         ・本名
+         ・祈り
+         ・記念日
+         ・編集
+         ・削除
+       が表示される。
        ======================================================= */
 
     function renderPeople() {
 
+      /*
+        一度一覧を空にする。
+      */
+
       personList.innerHTML =
         "";
 
+
+      /*
+        第1段階の見出しに
+        登録人数を表示。
+      */
+
+      peopleAccordionSummary.textContent =
+        `大切な人リスト（${people.length}人）`;
+
+
+      /*
+        まだ誰も登録されていない場合。
+      */
 
       if (
         people.length === 0
@@ -2885,307 +3842,460 @@
 
         personList.innerHTML =
           `
+
             <p class="empty">
-              まだ登録されていません。
+
+              まだ大切な人は登録されていません。
+
             </p>
+
           `;
 
+
         return;
+
       }
 
+
+      /*
+        人物ごとに
+        第2段階のdetailsを作る。
+      */
 
       people.forEach(
 
         (person, index) => {
 
 
-          const div =
+          const details =
             document.createElement(
-              "div"
+              "details"
             );
 
 
-          div.className =
-            "person";
+          details.className =
+            "person-details";
 
+
+          /* ---------------------------------------------------
+             写真
+             --------------------------------------------------- */
 
           const photoHTML =
+
             person.photo
 
               ? `
+
                 <img
                   class="profile-photo"
                   src="${person.photo}"
                   alt=""
                 >
+
               `
 
               : `
+
                 <div
                   class="profile-photo placeholder"
                 >
                   祈
                 </div>
+
               `;
 
+
+          /* ---------------------------------------------------
+             記念日件数
+             --------------------------------------------------- */
+
+          const anniversaryCount =
+
+            Array.isArray(
+              person.anniversaries
+            )
+
+              ? person.anniversaries.length
+
+              : 0;
+
+
+          /* ---------------------------------------------------
+             記念日一覧
+             --------------------------------------------------- */
 
           let anniversariesHTML =
             "";
 
 
           if (
-            person.anniversaries
-            &&
-            person.anniversaries.length > 0
+            anniversaryCount > 0
           ) {
 
             anniversariesHTML =
-              '<div class="person-anniversaries">' +
+              `
 
-              person.anniversaries.map(
+                <div class="person-anniversary-heading">
+                  記念日
+                </div>
 
-                item => `
+                <div class="person-anniversaries">
 
-                  <div class="person-anniversary">
+                  ${
+                    person.anniversaries
 
-                    ${escapeHTML(
-                      formatAnniversary(
-                        item
+                      .map(
+
+                        item => `
+
+                          <div class="person-anniversary">
+
+                            ${escapeHTML(
+                              formatAnniversary(
+                                item
+                              )
+                            )}
+
+                            　
+
+                            ${escapeHTML(
+                              item.title
+                            )}
+
+                            <span class="person-anniversary-meta">
+
+                              ${escapeHTML(
+                                formatRepeat(
+                                  item.repeat
+                                )
+                              )}
+
+                              ／
+
+                              ${escapeHTML(
+                                formatNotification(
+                                  item.notification
+                                )
+                              )}
+
+                            </span>
+
+                          </div>
+
+                        `
+
                       )
-                    )}
 
-                    　
+                      .join("")
+                  }
 
-                    ${escapeHTML(
-                      item.title
-                    )}
+                </div>
 
-                    <span
-                      class="person-anniversary-meta"
-                    >
+              `;
 
-                      ${escapeHTML(
-                        formatRepeat(
-                          item.repeat
-                        )
-                      )}
+          } else {
 
-                      ／
+            anniversariesHTML =
+              `
 
-                      ${escapeHTML(
-                        formatNotification(
-                          item.notification
-                        )
-                      )}
+                <div class="person-anniversary-heading">
+                  記念日
+                </div>
 
-                    </span>
+                <div class="person-no-anniversary">
+                  記念日はまだ登録されていません。
+                </div>
 
-                  </div>
+              `;
 
-                `
-              ).join("") +
-
-              "</div>";
           }
 
 
-          div.innerHTML =
+          /* ---------------------------------------------------
+             第2段階アコーディオン全体
+             --------------------------------------------------- */
+
+          details.innerHTML =
             `
 
-              <div class="person-row">
+              <!-- =============================================
+                   人物を閉じているときに見える部分
+                   ============================================= -->
+
+              <summary class="person-summary">
 
                 ${photoHTML}
 
-                <div class="person-info">
+                <div class="person-summary-info">
 
                   <div class="display-name">
+
                     ${escapeHTML(
+
                       person.displayName
+
                       ||
+
                       person.name
+
                     )}
+
                   </div>
 
-                  <div class="real-name">
-                    ${escapeHTML(
-                      person.name
-                    )}
-                  </div>
+                  <div class="person-count">
 
-                  <div class="prayer">
-                    ${escapeHTML(
-                      person.prayer || ""
-                    )}
+                    記念日 ${anniversaryCount}件
+
                   </div>
 
                 </div>
 
-              </div>
+              </summary>
 
 
-              ${anniversariesHTML}
+              <!-- =============================================
+                   人物を開いたときに見える部分
+                   ============================================= -->
+
+              <div class="person-content">
 
 
-              <div class="person-actions">
+                ${
+                  person.displayName
 
-                <button
-                  class="edit-button"
-                  type="button"
-                >
-                  編集
-                </button>
+                    ? `
+
+                      <div class="real-name">
+
+                        ${escapeHTML(
+                          person.name
+                        )}
+
+                      </div>
+
+                    `
+
+                    : ""
+                }
 
 
-                <button
-                  class="delete-button"
-                  type="button"
-                >
-                  削除
-                </button>
+                ${
+                  person.prayer
+
+                    ? `
+
+                      <div class="prayer">
+
+                        ${escapeHTML(
+                          person.prayer
+                        )}
+
+                      </div>
+
+                    `
+
+                    : ""
+                }
+
+
+                ${anniversariesHTML}
+
+
+                <div class="person-actions">
+
+                  <button
+                    class="edit-button"
+                    type="button"
+                  >
+                    編集
+                  </button>
+
+                  <button
+                    class="delete-button"
+                    type="button"
+                  >
+                    削除
+                  </button>
+
+                </div>
 
               </div>
 
             `;
 
 
-
-          /* -------------------------------------------------
+          /* ---------------------------------------------------
              人物編集
-             ------------------------------------------------- */
+             --------------------------------------------------- */
 
-          div.querySelector(
-            ".edit-button"
-          )
-          .addEventListener(
+          details
+            .querySelector(
+              ".edit-button"
+            )
+            .addEventListener(
 
-            "click",
+              "click",
 
-            () => {
+              () => {
 
-
-              editingIndex =
-                index;
-
-
-              editingPhoto =
-                person.photo || "";
+                editingIndex =
+                  index;
 
 
-              nameInput.value =
-                person.name || "";
+                editingPhoto =
+                  person.photo || "";
 
 
-              displayNameInput.value =
-                person.displayName || "";
+                nameInput.value =
+                  person.name || "";
 
 
-              prayerInput.value =
-                person.prayer || "";
+                displayNameInput.value =
+                  person.displayName || "";
 
 
-              photoInput.value =
-                "";
+                prayerInput.value =
+                  person.prayer || "";
 
 
-              currentAnniversaries =
+                /*
+                  ファイル入力は
+                  セキュリティ上既存値を直接入れられない。
+                */
 
-                person.anniversaries
-
-                  ? person.anniversaries.map(
-
-                      item => ({
-                        ...item
-                      })
-
-                    )
-
-                  : [];
+                photoInput.value =
+                  "";
 
 
-              resetAnniversaryForm();
+                /*
+                  元データを直接変更しないよう、
+                  コピーを作る。
+                */
+
+                currentAnniversaries =
+
+                  person.anniversaries
+
+                    ? person.anniversaries.map(
+
+                        item => ({
+
+                          ...item
+
+                        })
+
+                      )
+
+                    : [];
 
 
-              renderCurrentAnniversaries();
+                resetAnniversaryForm();
 
 
-              saveButton.textContent =
-                "更新する";
+                renderCurrentAnniversaries();
 
 
-              cancelEditButton.style.display =
-                "block";
+                saveButton.textContent =
+                  "更新する";
 
 
-              editingMessage.style.display =
-                "block";
+                cancelEditButton
+                  .style
+                  .display =
+                    "block";
 
 
-              formCard.scrollIntoView({
-
-                behavior:
-                  "smooth",
-
-                block:
-                  "start"
-
-              });
-
-            }
-          );
+                editingMessage
+                  .style
+                  .display =
+                    "block";
 
 
+                /*
+                  登録フォームまで
+                  自動スクロール。
+                */
 
-          /* -------------------------------------------------
+                formCard.scrollIntoView({
+
+                  behavior: "smooth",
+
+                  block: "start"
+
+                });
+
+              }
+
+            );
+
+
+          /* ---------------------------------------------------
              人物削除
-             ------------------------------------------------- */
+             --------------------------------------------------- */
 
-          div.querySelector(
-            ".delete-button"
-          )
-          .addEventListener(
+          details
+            .querySelector(
+              ".delete-button"
+            )
+            .addEventListener(
 
-            "click",
+              "click",
 
-            () => {
+              () => {
+
+                const name =
+                  person.displayName
+                  ||
+                  person.name;
 
 
-              const ok =
-                confirm(
-                  `${person.displayName || person.name} を削除しますか？`
+                const ok =
+                  confirm(
+                    `${name} を削除しますか？`
+                  );
+
+
+                if (!ok) {
+
+                  return;
+
+                }
+
+
+                people.splice(
+                  index,
+                  1
                 );
 
 
-              if (!ok) {
-                return;
+                savePeople();
+
+
+                resetForm();
+
+
+                renderAll();
+
               }
 
-
-              people.splice(
-                index,
-                1
-              );
+            );
 
 
-              savePeople();
-
-
-              resetForm();
-
-
-              renderAll();
-
-            }
-          );
-
+          /*
+            完成した人物detailsを
+            一覧に追加。
+          */
 
           personList.appendChild(
-            div
+            details
           );
 
         }
-      );
-    }
 
+      );
+
+    }
 
 
     /* =======================================================
@@ -3229,12 +4339,16 @@
         "登録する";
 
 
-      cancelEditButton.style.display =
-        "none";
+      cancelEditButton
+        .style
+        .display =
+          "none";
 
 
-      editingMessage.style.display =
-        "none";
+      editingMessage
+        .style
+        .display =
+          "none";
 
 
       renderCurrentAnniversaries();
@@ -3242,9 +4356,8 @@
     }
 
 
-
     /* =======================================================
-       編集キャンセル
+       人物編集キャンセル
        ======================================================= */
 
     cancelEditButton.addEventListener(
@@ -3256,8 +4369,8 @@
         resetForm();
 
       }
-    );
 
+    );
 
 
     /* =======================================================
@@ -3293,6 +4406,10 @@
           photoInput.files[0];
 
 
+        /*
+          名前だけは必須。
+        */
+
         if (!name) {
 
           alert(
@@ -3300,11 +4417,16 @@
           );
 
           return;
+
         }
 
 
+        /*
+          写真読み込み後に共通して行う保存処理。
+        */
+
         const finishSave =
-          (photoData) => {
+          photoData => {
 
 
             const person = {
@@ -3323,13 +4445,19 @@
                 currentAnniversaries.map(
 
                   item => ({
+
                     ...item
+
                   })
 
                 )
 
             };
 
+
+            /*
+              新規登録。
+            */
 
             if (
               editingIndex ===
@@ -3340,11 +4468,17 @@
                 person
               );
 
+
+            /*
+              既存人物の更新。
+            */
+
             } else {
 
               people[
                 editingIndex
-              ] = person;
+              ] =
+                person;
 
             }
 
@@ -3359,6 +4493,10 @@
 
           };
 
+
+        /* -----------------------------------------------------
+           新しい写真が選択されている場合
+           ----------------------------------------------------- */
 
         if (file) {
 
@@ -3380,11 +4518,17 @@
             file
           );
 
+
+        /* -----------------------------------------------------
+           写真変更なし
+           ----------------------------------------------------- */
+
         } else {
 
           finishSave(
 
-            editingIndex === null
+            editingIndex ===
+            null
 
               ? ""
 
@@ -3395,42 +4539,79 @@
         }
 
       }
+
     );
 
 
-
     /* =======================================================
-       全表示更新
+       全画面再描画
        ======================================================= */
 
     function renderAll() {
 
+      /*
+        大切な人リスト。
+      */
+
       renderPeople();
 
+
+      /*
+        今日のおいのり。
+      */
+
       renderTodayPrayers();
+
+
+      /*
+        30日以内のおいのり。
+      */
 
       renderUpcomingPrayers();
 
     }
 
 
-
     /* =======================================================
        初期処理
        ======================================================= */
 
+    /*
+      古いデータ形式を補正。
+    */
+
     normalizePeople();
+
+
+    /*
+      記念日入力欄を初期状態に。
+    */
 
     resetAnniversaryForm();
 
+
+    /*
+      入力中記念日一覧を描画。
+    */
+
     renderCurrentAnniversaries();
+
+
+    /*
+      アプリ全体を描画。
+    */
 
     renderAll();
 
 
-
     /* =======================================================
        Service Worker
+       =======================================================
+
+       GitHub Pages上でPWAとして動作させる。
+
+       service-worker.js が存在する場合、
+       ページ読み込み後に登録する。
        ======================================================= */
 
     if (
@@ -3450,6 +4631,7 @@
             );
 
         }
+
       );
 
     }
