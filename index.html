@@ -107,11 +107,12 @@
             <div class="small">今日</div>
             <div id="todayLabel" class="name"></div>
           </div>
-          <button class="btn" id="quickAddBtn">＋ 登録</button>
+          <button class="btn" id="quickAddBtn">＋ 大切な人</button>
         </div>
+        <div class="meta" style="margin-top:10px">今日という日に、大切な人を思う時間を。</div>
       </div>
 
-      <div class="section-title"><h2>今日・これからの記念日</h2><span id="upcomingCount" class="small"></span></div>
+      <div class="section-title"><h2>今日と、これからの記念日</h2><span id="upcomingCount" class="small"></span></div>
       <div id="upcomingList"></div>
     </section>
 
@@ -123,41 +124,41 @@
       <div id="peopleList"></div>
     </section>
 
-    <section id="view-data" class="view">
-      <div class="section-title"><h2>データ・OIF</h2></div>
+    <section id="view-settings" class="view">
+      <div class="section-title"><h2>設定</h2></div>
 
       <div class="card">
-        <div class="name">OIFを読み込む</div>
-        <div class="meta">受け取った .oif ファイルから人物や記念日をこの端末に追加します。</div>
+        <div class="name">記念日共有ファイルを受け取る</div>
+        <div class="meta">誰かから受け取った記念日共有ファイル（.oif）を、この端末に追加します。</div>
         <div class="actions">
-          <button class="btn" id="importBtn">OIFを選ぶ</button>
+          <button class="btn" id="importBtn">ファイルを選ぶ</button>
           <input id="importFile" type="file" accept=".oif,application/json" hidden>
         </div>
       </div>
 
       <div class="card">
-        <div class="name">この端末のバックアップ</div>
-        <div class="meta">すべての人物・記念日を1つのOIFとして保存できます。</div>
-        <label class="check"><input id="includePhotos" type="checkbox"> OIFに写真を含める</label>
+        <div class="name">バックアップを保存する</div>
+        <div class="meta">大切な人と記念日を、記念日共有ファイルとして保存できます。</div>
+        <label class="check"><input id="includePhotos" type="checkbox"> 写真も含める</label>
         <div class="actions">
-          <button class="btn secondary" id="backupBtn">全データを書き出す</button>
+          <button class="btn secondary" id="backupBtn">バックアップを保存</button>
         </div>
       </div>
 
       <div class="card">
-        <div class="name">クラウド共有</div>
-        <div class="meta">アカウントなし・QRコード＋復元キー方式を想定しています。</div>
-        <div class="notice">GitHub Pagesの index.html だけでは安全な端末間同期用ストレージを持てないため、この版では未接続です。将来のクラウドAPIに接続できるデータ構造にはしてあります。</div>
+        <div class="name">ほかの端末でも使う</div>
+        <div class="meta">スマホやPCで同じ記念日を使える機能を準備しています。</div>
+        <div class="notice">現在は、記念日共有ファイルを保存して、別の端末で読み込む方法が使えます。</div>
       </div>
 
       <div class="card">
         <div class="name">この端末のデータ</div>
         <div id="storageInfo" class="meta"></div>
-        <div class="actions"><button class="btn danger" id="clearBtn">すべて削除</button></div>
+        <div class="actions"><button class="btn danger" id="clearBtn">この端末のデータを削除</button></div>
       </div>
 
       <div class="small" style="padding:10px 4px 28px">
-        OIF 0.1 — Oinorisan Interchange Format（試作仕様）
+        記念日共有ファイル（.oif）
       </div>
     </section>
   </main>
@@ -166,7 +167,7 @@
     <div class="inner">
       <button class="navbtn active" data-view="home">今日</button>
       <button class="navbtn" data-view="people">大切な人</button>
-      <button class="navbtn" data-view="data">データ</button>
+      <button class="navbtn" data-view="settings">設定</button>
     </div>
   </nav>
 </div>
@@ -204,7 +205,7 @@
 
 <dialog id="importDialog">
   <div class="dialog-inner">
-    <div class="dialog-head"><h3>OIFを読み込む</h3><button class="x" id="closeImportBtn" aria-label="閉じる">×</button></div>
+    <div class="dialog-head"><h3>記念日共有ファイルを受け取る</h3><button class="x" id="closeImportBtn" aria-label="閉じる">×</button></div>
     <div id="importSummary"></div>
     <div class="actions">
       <button class="btn" id="confirmImportBtn">この端末に追加</button>
@@ -348,7 +349,7 @@
         </div>
         <div class="actions">
           <button class="btn" data-pray-person="${p.id}" data-pray-mem="${m.id}">おいのり</button>
-          <button class="btn secondary" data-share-mem="${p.id}:${m.id}">OIF共有</button>
+          <button class="btn secondary" data-share-mem="${p.id}:${m.id}">共有</button>
         </div>
       </div>`).join("") : `<div class="empty">まだ記念日がありません。<br>「＋ 登録」から大切な人と記念日を追加できます。</div>`;
   }
@@ -379,7 +380,7 @@
         </div>
         <div class="actions">
           <button class="btn" data-add-mem="${p.id}">＋ 記念日</button>
-          <button class="btn secondary" data-share-person="${p.id}">OIF共有</button>
+          <button class="btn secondary" data-share-person="${p.id}">共有</button>
           <button class="btn ghost" data-edit-person="${p.id}">編集</button>
           <button class="btn danger" data-delete-person="${p.id}">削除</button>
         </div>
@@ -549,7 +550,7 @@
     const include = $("includePhotos").checked;
     const oif = buildOIF({
       kind:"collection",
-      title:"おいのりさん™ バックアップ",
+      title:"おいのりさん™ 記念日バックアップ",
       peopleData:people.map(p=>cloneForExport(p,include))
     });
     const stamp = new Date().toISOString().slice(0,10).replaceAll("-","");
@@ -557,7 +558,7 @@
   }
 
   function validateOIF(data){
-    if(!data || typeof data!=="object") throw new Error("OIFデータではありません。");
+    if(!data || typeof data!=="object") throw new Error("記念日共有ファイルではありません。");
     if(data.oif!=="oinorisan-interchange-format") throw new Error("対応していないファイルです。");
     if(!Array.isArray(data.people)) throw new Error("people データがありません。");
     return data;
@@ -567,7 +568,7 @@
     const pCount = data.people.length;
     const mCount = data.people.reduce((n,p)=>n+(Array.isArray(p.memorials)?p.memorials.length:0),0);
     $("importSummary").innerHTML = `
-      <div class="oknote">「${esc(data.title || "OIFデータ")}」</div>
+      <div class="oknote">「${esc(data.title || "記念日共有ファイル")}」</div>
       <div class="card" style="box-shadow:none">
         <div class="name">${pCount}件の対象／${mCount}件の記念日</div>
         <div class="meta">同じIDがすでにある場合は重複を避け、既存データに不足している記念日だけ追加します。</div>
@@ -606,7 +607,7 @@
       summarizeImport(data);
       $("importDialog").showModal();
     }catch(e){
-      alert("OIFを読み込めませんでした。\n" + e.message);
+      alert("記念日共有ファイルを読み込めませんでした。\n" + e.message);
     } finally {
       $("importFile").value = "";
     }
@@ -657,7 +658,7 @@
   $("confirmImportBtn").onclick = () => {
     if(!pendingImport) return;
     mergeImport(pendingImport); pendingImport=null; $("importDialog").close();
-    alert("OIFを追加しました。");
+    alert("記念日を追加しました。");
   };
   $("clearBtn").onclick = () => {
     if(confirm("この端末のおいのりさん™データをすべて削除しますか？\n元に戻せません。")){
