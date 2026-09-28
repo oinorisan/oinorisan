@@ -151,6 +151,15 @@
         <div class="notice">現在は、記念日共有ファイルを保存して、別の端末で読み込む方法が使えます。</div>
       </div>
 
+
+      <div class="card">
+        <div class="name">おいのりの音</div>
+        <div class="meta">おいのり中に流れる音の大きさを調節できます。</div>
+        <label for="prayerVolume">音量 <span id="prayerVolumeLabel">70%</span></label>
+        <input id="prayerVolume" type="range" min="0" max="100" step="5" value="70">
+        <label class="check"><input id="prayerMute" type="checkbox"> 音を鳴らさない</label>
+      </div>
+
       <div class="card">
         <div class="name">この端末のデータ</div>
         <div id="storageInfo" class="meta"></div>
@@ -227,11 +236,14 @@
   </div>
 </dialog>
 
+<audio id="prayerAudio" preload="auto" src="audio/oinorisan2026.mp3"></audio>
+
 <script>
 (() => {
   "use strict";
 
   const STORAGE_KEY = "oinorisanPeople";
+  const AUDIO_SETTINGS_KEY = "oinorisanAudioSettings";
   const OIF_VERSION = "0.1";
   const $ = (id) => document.getElementById(id);
   const uuid = () => (crypto.randomUUID ? crypto.randomUUID() :
@@ -316,6 +328,49 @@
 
   function formatDate(d){
     return new Intl.DateTimeFormat("ja-JP",{month:"long",day:"numeric",weekday:"short"}).format(d);
+  }
+
+
+  function loadAudioSettings(){
+    try{
+      return JSON.parse(localStorage.getItem(AUDIO_SETTINGS_KEY) || '{"volume":0.7,"muted":false}');
+    }catch(e){
+      return {volume:0.7, muted:false};
+    }
+  }
+
+  function saveAudioSettings(){
+    const volume = Math.max(0, Math.min(1, Number($("prayerVolume").value) / 100));
+    const muted = $("prayerMute").checked;
+    localStorage.setItem(AUDIO_SETTINGS_KEY, JSON.stringify({volume, muted}));
+    applyAudioSettings();
+  }
+
+  function applyAudioSettings(){
+    const s = loadAudioSettings();
+    const audio = $("prayerAudio");
+    audio.volume = s.volume ?? 0.7;
+    audio.muted = !!s.muted;
+    $("prayerVolume").value = Math.round((s.volume ?? 0.7) * 100);
+    $("prayerMute").checked = !!s.muted;
+    $("prayerVolumeLabel").textContent = `${Math.round((s.volume ?? 0.7) * 100)}%`;
+  }
+
+  function stopPrayerAudio(){
+    const audio = $("prayerAudio");
+    audio.pause();
+    audio.currentTime = 0;
+  }
+
+  async function startPrayerAudio(){
+    const audio = $("prayerAudio");
+    applyAudioSettings();
+    audio.currentTime = 0;
+    try{
+      await audio.play();
+    }catch(e){
+      console.warn("音声を再生できませんでした", e);
+    }
   }
 
   function renderAll(){
@@ -622,11 +677,13 @@
     $("prayerCount").textContent = left;
     $("prayerDialog").showModal();
     clearInterval(prayerTimer);
+    startPrayerAudio();
     prayerTimer = setInterval(()=>{
       left--;
       $("prayerCount").textContent = Math.max(0,left);
       if(left<=0){
         clearInterval(prayerTimer);
+        stopPrayerAudio();
         $("prayerMessage").textContent = "おいのりしました。";
       }
     },1000);
@@ -634,6 +691,7 @@
 
   function closePrayer(){
     clearInterval(prayerTimer);
+    stopPrayerAudio();
     $("prayerDialog").close();
   }
 
@@ -674,6 +732,11 @@
       people=[]; save();
     }
   };
+  $("prayerVolume").addEventListener("input", () => {
+    $("prayerVolumeLabel").textContent = `${$("prayerVolume").value}%`;
+    saveAudioSettings();
+  });
+  $("prayerMute").addEventListener("change", saveAudioSettings);
   $("closePrayerBtn").onclick = closePrayer;
 
   document.addEventListener("click", async e=>{
@@ -702,6 +765,7 @@
   }
 
   renderAll();
+  applyAudioSettings();
 })();
 </script>
 </body>
