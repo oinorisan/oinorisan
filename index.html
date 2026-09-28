@@ -19,7 +19,15 @@
     button,input,select,textarea{font:inherit}
     button{cursor:pointer}
     .app{max-width:760px;margin:0 auto;min-height:100vh;padding-bottom:92px}
-    header{padding:28px 20px 14px;text-align:center}
+    header{padding:30px 20px 18px;text-align:center}
+    .logo-mark{
+      width:88px;
+      height:88px;
+      object-fit:contain;
+      display:block;
+      margin:0 auto 12px;
+      border-radius:22px;
+    }
     .brand{font-size:1.55rem;font-weight:700;letter-spacing:.03em}
     .tagline{margin-top:6px;color:var(--muted);font-size:.92rem}
     main{padding:0 16px}
@@ -77,6 +85,16 @@
 <body>
 <div class="app">
   <header>
+    <!--
+      ロゴマーク
+      GitHub Pages 側の icons/icon-192.png を使います。
+      もし現在のロゴ画像のファイル名が別なら、src の部分だけ差し替えてください。
+    -->
+    <img
+      class="logo-mark"
+      src="icons/icon-192.png"
+      alt="おいのりさん™ ロゴ"
+      onerror="this.style.display='none'">
     <div class="brand">おいのりさん™</div>
     <div class="tagline">大切な人に、祈りを捧げる。</div>
   </header>
