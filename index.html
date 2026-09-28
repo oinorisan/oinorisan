@@ -174,7 +174,7 @@
 
 <dialog id="personDialog">
   <form method="dialog" id="personForm" class="dialog-inner">
-    <div class="dialog-head"><h3 id="personDialogTitle">登録</h3><button class="x" value="cancel" aria-label="閉じる">×</button></div>
+    <div class="dialog-head"><h3 id="personDialogTitle">登録</h3><button type="button" class="x" value="cancel" aria-label="閉じる">×</button></div>
     <input type="hidden" id="personId">
     <label>名前</label><input id="personName" required placeholder="例：山田 花子">
     <label>表示名</label><input id="displayName" placeholder="例：おばあちゃん／推し">
@@ -188,7 +188,7 @@
 
 <dialog id="memorialDialog">
   <form method="dialog" class="dialog-inner">
-    <div class="dialog-head"><h3>記念日を追加</h3><button class="x" value="cancel" aria-label="閉じる">×</button></div>
+    <div class="dialog-head"><h3>記念日を追加</h3><button type="button" class="x" value="cancel" aria-label="閉じる">×</button></div>
     <input type="hidden" id="memPersonId">
     <input type="hidden" id="memorialId">
     <label>記念日の名前</label><input id="memTitle" required placeholder="誕生日／命日／結婚記念日 など">
@@ -644,6 +644,15 @@
       b.classList.add("active");
       $("view-"+b.dataset.view).classList.add("active");
       window.scrollTo({top:0,behavior:"smooth"});
+    });
+  });
+
+
+  // ダイアログ右上の「×」は、フォーム送信や必須入力チェックを行わず閉じる。
+  document.querySelectorAll("dialog .x").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const dialog = btn.closest("dialog");
+      if(dialog && dialog.open) dialog.close();
     });
   });
 
