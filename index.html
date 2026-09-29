@@ -1,4 +1,24 @@
 <!doctype html>
+<!--
+  おいのりさん™ v0.8g
+
+  この版の主な追加内容
+  ------------------------------------------------------------
+  ・大切な人にSNS / Web URLを複数登録
+  ・X / Instagram / Facebook / YouTube / Web / その他に対応
+  ・大切な人のアコーディオン内にリンクを表示
+  ・OIF（記念日共有ファイル）書き出し時にもリンク情報を含める
+
+  既存機能
+  ------------------------------------------------------------
+  ・大切な人の登録 / 編集 / 削除
+  ・記念日の追加 / 編集 / 削除 / 共有
+  ・二段アコーディオン表示
+  ・25秒のおいのり
+  ・audio/oinorisan2026.mp3
+  ・音量調節
+  ・記念日共有ファイル（.oif）
+-->
 <html lang="ja">
 <head>
   <meta charset="utf-8">
@@ -67,6 +87,48 @@
     .mem-summary{min-width:0;flex:1}
     .mini-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
     .btn.tiny{padding:7px 10px;border-radius:10px;font-size:.82rem}
+
+    /* =======================================================
+       SNS / Web リンク
+       ======================================================= */
+
+    /* 大切な人の詳細内に表示するリンク一覧 */
+    .profile-links{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin:10px 0 4px;
+    }
+
+    /* X / Instagram / 公式サイトなどの小さなリンクボタン */
+    .profile-link{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:7px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      color:var(--accent);
+      text-decoration:none;
+      font-size:.82rem;
+    }
+
+    /* リンク編集用の1行 */
+    .link-editor-row{
+      display:grid;
+      grid-template-columns:130px 1fr auto;
+      gap:8px;
+      align-items:end;
+      margin:8px 0;
+    }
+
+    /* スマホ幅では縦並びにする */
+    @media(max-width:520px){
+      .link-editor-row{
+        grid-template-columns:1fr;
+      }
+    }
     .date{font-variant-numeric:tabular-nums;font-weight:650}
     nav{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-top:1px solid var(--line);z-index:20}
     nav .inner{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);padding:8px 10px calc(8px + env(safe-area-inset-bottom))}
@@ -240,6 +302,23 @@
     <label>表示名</label><input id="displayName" placeholder="例：おばあちゃん／推し">
     <label>写真</label><input id="personPhoto" type="file" accept="image/*">
     <div id="photoPreview" class="meta"></div>
+
+    <!-- =====================================================
+         SNS / Web URL
+         1人につき複数のリンクを登録できます。
+         ===================================================== -->
+    <label>SNS / Web</label>
+    <div class="meta">
+      X、Instagram、Facebook、YouTube、公式サイトなどを登録できます。
+    </div>
+
+    <!-- JavaScriptで入力行を追加・削除します -->
+    <div id="personLinksEditor"></div>
+
+    <div class="actions">
+      <button type="button" class="btn ghost" id="addPersonLinkBtn">＋ リンクを追加</button>
+    </div>
+
     <div class="actions">
       <button type="button" class="btn secondary" id="savePersonBtn">保存</button>
     </div>
@@ -346,6 +425,20 @@
       name: p.name || p.fullName || p.displayName || "名称未設定",
       displayName: p.displayName || p.nickname || "",
       photo: p.photo || p.image || p.photoData || "",
+
+      /* -------------------------------------------------------
+         SNS / Webリンク
+         旧データには links が無いので、無ければ空配列にします。
+         ------------------------------------------------------- */
+      links: Array.isArray(p.links)
+        ? p.links
+            .map(link => ({
+              type: link.type || "other",
+              url: link.url || ""
+            }))
+            .filter(link => link.url)
+        : [],
+
       createdAt: p.createdAt || new Date().toISOString(),
       updatedAt: p.updatedAt || new Date().toISOString(),
       memorials: memorials.map(m => ({
@@ -494,6 +587,22 @@
         </button>
 
         <div class="accordion-body" id="person-body-${p.id}">
+
+          <!-- SNS / Webリンク -->
+          ${Array.isArray(p.links) && p.links.length ? `
+            <div class="profile-links">
+              ${p.links.map(link => `
+                <a
+                  class="profile-link"
+                  href="${esc(link.url)}"
+                  target="_blank"
+                  rel="noopener noreferrer">
+                  ${esc(linkLabel(link.type))}
+                </a>
+              `).join("")}
+            </div>
+          ` : ""}
+
           ${p.memorials.length ? p.memorials.map(m => `
             <div class="memorial">
               <button class="accordion-toggle mem-toggle" type="button"
@@ -532,6 +641,109 @@
     $("storageInfo").textContent = `${people.length}件の対象／${memorialCount}件の記念日／約${Math.ceil(bytes/1024)}KB`;
   }
 
+
+  /* =========================================================
+     SNS / Webリンク編集の補助関数
+     ========================================================= */
+
+  /**
+   * 1行分のSNS / Web入力欄を作ります。
+   *
+   * type:
+   *   x / instagram / facebook / youtube / website / other
+   *
+   * url:
+   *   実際のプロフィールURL
+   */
+  function createLinkEditorRow(link = {type:"website", url:""}){
+    const row = document.createElement("div");
+    row.className = "link-editor-row";
+
+    row.innerHTML = `
+      <div>
+        <label style="margin-top:0">種類</label>
+        <select class="person-link-type">
+          <option value="x">X</option>
+          <option value="instagram">Instagram</option>
+          <option value="facebook">Facebook</option>
+          <option value="youtube">YouTube</option>
+          <option value="website">公式サイト / Web</option>
+          <option value="other">その他</option>
+        </select>
+      </div>
+
+      <div>
+        <label style="margin-top:0">URL</label>
+        <input
+          class="person-link-url"
+          type="url"
+          inputmode="url"
+          placeholder="https://..."
+          value="${esc(link.url || "")}">
+      </div>
+
+      <button type="button" class="btn danger tiny remove-person-link">
+        削除
+      </button>
+    `;
+
+    /* 初期値として種類を反映 */
+    row.querySelector(".person-link-type").value = link.type || "website";
+
+    /* この行だけ削除 */
+    row.querySelector(".remove-person-link").addEventListener("click", () => {
+      row.remove();
+    });
+
+    return row;
+  }
+
+  /**
+   * 編集ダイアログ内にSNS / Web入力行を表示します。
+   */
+  function renderPersonLinksEditor(links = []){
+    const editor = $("personLinksEditor");
+    editor.innerHTML = "";
+
+    /* 既存リンクがある場合はその件数分表示 */
+    if(Array.isArray(links) && links.length){
+      links.forEach(link => editor.appendChild(createLinkEditorRow(link)));
+    }else{
+      /* 初回は空の1行を表示しておく */
+      editor.appendChild(createLinkEditorRow());
+    }
+  }
+
+  /**
+   * 編集ダイアログから入力済みリンクを回収します。
+   * URLが空の行は保存しません。
+   */
+  function collectPersonLinks(){
+    const rows = [...document.querySelectorAll("#personLinksEditor .link-editor-row")];
+
+    return rows
+      .map(row => ({
+        type: row.querySelector(".person-link-type").value,
+        url: row.querySelector(".person-link-url").value.trim()
+      }))
+      .filter(link => link.url);
+  }
+
+  /**
+   * typeコードを、画面表示用の日本語 / サービス名に変換します。
+   */
+  function linkLabel(type){
+    const labels = {
+      x: "X",
+      instagram: "Instagram",
+      facebook: "Facebook",
+      youtube: "YouTube",
+      website: "Web",
+      other: "リンク"
+    };
+    return labels[type] || "リンク";
+  }
+
   function openPerson(id=""){
     const p = people.find(x=>x.id===id);
     $("personId").value = p?.id || "";
@@ -539,6 +751,10 @@
     $("displayName").value = p?.displayName || "";
     $("personPhoto").value = "";
     $("photoPreview").textContent = p?.photo ? "現在の写真があります。新しい写真を選ぶと差し替えます。" : "";
+
+    /* SNS / Webリンクを編集欄へ反映 */
+    renderPersonLinksEditor(p?.links || []);
+
     $("personDialogTitle").textContent = p ? "大切な人を編集" : "大切な人を登録";
     $("personDialog").showModal();
   }
@@ -582,13 +798,25 @@
     if(p){
       p.name = name;
       p.displayName = $("displayName").value.trim();
+
+      /* SNS / Webリンクを保存 */
+      p.links = collectPersonLinks();
+
       if(newPhoto) p.photo = newPhoto;
       p.updatedAt = new Date().toISOString();
     }else{
       people.push({
-        id: uuid(), name, displayName:$("displayName").value.trim(),
-        photo:newPhoto || "", memorials:[],
-        createdAt:new Date().toISOString(), updatedAt:new Date().toISOString()
+        id: uuid(),
+        name,
+        displayName:$("displayName").value.trim(),
+        photo:newPhoto || "",
+
+        /* 新規登録時のSNS / Webリンク */
+        links: collectPersonLinks(),
+
+        memorials:[],
+        createdAt:new Date().toISOString(),
+        updatedAt:new Date().toISOString()
       });
     }
     save();
@@ -646,6 +874,15 @@
       id: p.id,
       name: p.name,
       displayName: p.displayName || "",
+
+      /* SNS / WebリンクもOIFに含める */
+      links: Array.isArray(p.links)
+        ? p.links.map(link => ({
+            type: link.type,
+            url: link.url
+          }))
+        : [],
+
       ...(includePhotos && p.photo ? {photo:p.photo}:{}),
       memorials: (onlyMemorial ? [onlyMemorial] : p.memorials).map(m=>({
         id:m.id, title:m.title, date:m.date, repeat:m.repeat || "yearly",
@@ -853,6 +1090,11 @@
 
   $("quickAddBtn").onclick = () => openPerson();
   $("addPersonBtn").onclick = () => openPerson();
+  /* SNS / Web入力行を1行追加 */
+  $("addPersonLinkBtn").onclick = () => {
+    $("personLinksEditor").appendChild(createLinkEditorRow());
+  };
+
   $("savePersonBtn").onclick = savePersonFromForm;
   $("saveMemorialBtn").onclick = saveMemorialFromForm;
   $("importBtn").onclick = () => $("importFile").click();
