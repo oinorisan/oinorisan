@@ -55,6 +55,18 @@
     .badge{display:inline-block;padding:4px 8px;border-radius:999px;background:var(--accent2);color:var(--accent);font-size:.76rem}
     .memorial{padding:12px 0;border-top:1px solid var(--line)}
     .memorial:first-child{border-top:0}
+    .accordion-toggle{
+      width:100%;border:0;background:transparent;padding:0;text-align:left;color:inherit;
+      display:flex;align-items:center;gap:10px;
+    }
+    .chev{width:1.1em;display:inline-block;transition:transform .18s ease;color:var(--muted)}
+    .accordion-toggle[aria-expanded="true"] .chev{transform:rotate(90deg)}
+    .accordion-body{display:none;margin-top:10px}
+    .accordion-body.open{display:block}
+    .person-head{padding:2px 0}
+    .mem-summary{min-width:0;flex:1}
+    .mini-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+    .btn.tiny{padding:7px 10px;border-radius:10px;font-size:.82rem}
     .date{font-variant-numeric:tabular-nums;font-weight:650}
     nav{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-top:1px solid var(--line);z-index:20}
     nav .inner{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);padding:8px 10px calc(8px + env(safe-area-inset-bottom))}
@@ -236,7 +248,7 @@
 
 <dialog id="memorialDialog">
   <form method="dialog" class="dialog-inner">
-    <div class="dialog-head"><h3>記念日を追加</h3><button type="button" class="x" value="cancel" aria-label="閉じる">×</button></div>
+    <div class="dialog-head"><h3 id="memorialDialogTitle">記念日を追加</h3><button type="button" class="x" value="cancel" aria-label="閉じる">×</button></div>
     <input type="hidden" id="memPersonId">
     <input type="hidden" id="memorialId">
     <label>記念日の名前</label><input id="memTitle" required placeholder="誕生日／命日／結婚記念日 など">
@@ -470,32 +482,46 @@
   function renderPeople(){
     $("peopleList").innerHTML = people.length ? people.map(p => `
       <div class="card">
-        <div class="row">
+        <button class="accordion-toggle person-toggle person-head" type="button"
+                aria-expanded="false" data-person-toggle="${p.id}">
+          <span class="chev">▶</span>
           ${avatarHTML(p)}
           <div class="grow">
             <div class="name">${esc(personLabel(p))}</div>
             ${p.displayName && p.name !== p.displayName ? `<div class="meta">${esc(p.name)}</div>`:""}
             <div class="meta">記念日 ${p.memorials.length}件</div>
           </div>
-        </div>
-        <div style="margin-top:10px">
-          ${p.memorials.map(m => `
+        </button>
+
+        <div class="accordion-body" id="person-body-${p.id}">
+          ${p.memorials.length ? p.memorials.map(m => `
             <div class="memorial">
-              <div class="row-between">
-                <div class="grow">
+              <button class="accordion-toggle mem-toggle" type="button"
+                      aria-expanded="false" data-mem-toggle="${p.id}:${m.id}">
+                <span class="chev">▶</span>
+                <div class="mem-summary">
                   <div class="name">${esc(m.title)}</div>
                   <div class="meta">${esc(m.date)} ${m.repeat==="yearly" ? "・毎年":""}</div>
-                  ${m.note ? `<div class="meta">${esc(m.note)}</div>`:""}
                 </div>
-                <button class="btn ghost" data-share-mem="${p.id}:${m.id}">共有</button>
+              </button>
+
+              <div class="accordion-body" id="mem-body-${p.id}-${m.id}">
+                ${m.note ? `<div class="meta" style="margin-bottom:10px">${esc(m.note)}</div>` : `<div class="meta" style="margin-bottom:10px">メモはありません。</div>`}
+                <div class="mini-actions">
+                  <button class="btn tiny" data-pray-person="${p.id}" data-pray-mem="${m.id}">おいのり</button>
+                  <button class="btn secondary tiny" data-edit-mem="${p.id}:${m.id}">編集</button>
+                  <button class="btn ghost tiny" data-share-mem="${p.id}:${m.id}">共有</button>
+                  <button class="btn danger tiny" data-delete-mem="${p.id}:${m.id}">削除</button>
+                </div>
               </div>
-            </div>`).join("") || `<div class="meta" style="padding:10px 0">記念日は未登録です。</div>`}
-        </div>
-        <div class="actions">
-          <button class="btn" data-add-mem="${p.id}">＋ 記念日</button>
-          <button class="btn secondary" data-share-person="${p.id}">共有</button>
-          <button class="btn ghost" data-edit-person="${p.id}">編集</button>
-          <button class="btn danger" data-delete-person="${p.id}">削除</button>
+            </div>`).join("") : `<div class="meta" style="padding:10px 0">記念日は未登録です。</div>`}
+
+          <div class="actions" style="margin-top:14px">
+            <button class="btn" data-add-mem="${p.id}">＋ 記念日</button>
+            <button class="btn secondary" data-share-person="${p.id}">まとめて共有</button>
+            <button class="btn ghost" data-edit-person="${p.id}">人を編集</button>
+            <button class="btn danger" data-delete-person="${p.id}">人を削除</button>
+          </div>
         </div>
       </div>`).join("") : `<div class="empty">登録された人・対象はありません。</div>`;
   }
@@ -527,6 +553,7 @@
     $("memDate").value = m?.date || "";
     $("memRepeat").value = m?.repeat || "yearly";
     $("memNote").value = m?.note || "";
+    $("memorialDialogTitle").textContent = m ? "記念日を編集" : "記念日を追加";
     $("memorialDialog").showModal();
   }
 
@@ -588,6 +615,18 @@
     p.updatedAt = new Date().toISOString();
     save();
     $("memorialDialog").close();
+  }
+
+  function deleteMemorial(personId, memorialId){
+    const p = people.find(x=>x.id===personId);
+    if(!p) return;
+    const m = p.memorials.find(x=>x.id===memorialId);
+    if(!m) return;
+    if(confirm(`「${m.title}」を削除しますか？`)){
+      p.memorials = p.memorials.filter(x=>x.id!==memorialId);
+      p.updatedAt = new Date().toISOString();
+      save();
+    }
   }
 
   function buildOIF({peopleData, kind, title}){
@@ -840,19 +879,52 @@
 
   document.addEventListener("click", async e=>{
     const t = e.target.closest("button"); if(!t) return;
+
+    if(t.dataset.personToggle){
+      const body = $("person-body-" + t.dataset.personToggle);
+      const open = t.getAttribute("aria-expanded") === "true";
+      t.setAttribute("aria-expanded", String(!open));
+      body?.classList.toggle("open", !open);
+      return;
+    }
+
+    if(t.dataset.memToggle){
+      const [pid,mid] = t.dataset.memToggle.split(":");
+      const body = $(`mem-body-${pid}-${mid}`);
+      const open = t.getAttribute("aria-expanded") === "true";
+      t.setAttribute("aria-expanded", String(!open));
+      body?.classList.toggle("open", !open);
+      return;
+    }
+
     if(t.dataset.addMem) openMemorial(t.dataset.addMem);
+
+    if(t.dataset.editMem){
+      const [pid,mid] = t.dataset.editMem.split(":");
+      openMemorial(pid, mid);
+    }
+
+    if(t.dataset.deleteMem){
+      const [pid,mid] = t.dataset.deleteMem.split(":");
+      deleteMemorial(pid, mid);
+    }
+
     if(t.dataset.editPerson) openPerson(t.dataset.editPerson);
+
     if(t.dataset.deletePerson){
       const p = people.find(x=>x.id===t.dataset.deletePerson);
       if(p && confirm(`「${personLabel(p)}」と記念日を削除しますか？`)){
         people = people.filter(x=>x.id!==p.id); save();
       }
     }
+
     if(t.dataset.sharePerson) await exportPerson(t.dataset.sharePerson);
+
     if(t.dataset.shareMem){
       const [pid,mid] = t.dataset.shareMem.split(":");
       await exportMemorial(pid,mid);
     }
+
     if(t.dataset.prayPerson) startPrayer(t.dataset.prayPerson,t.dataset.prayMem);
   });
 
